@@ -24,10 +24,10 @@ export class Editor {
     this.hooks = hooks;
     this.presets = new PresetManager();
 
-    this.gui = new GUI({ title: 'VFX Editor', width: 330 });
+    this.gui = new GUI({ title: 'VFX 에디터', width: 330 });
     this.gui.domElement.style.setProperty('--title-height', '30px');
 
-    this._presetState = { name: 'My preset', selected: this.presets.names[0] ?? '' };
+    this._presetState = { name: '내 프리셋', selected: this.presets.names[0] ?? '' };
 
     this._buildPresets();
     this._buildGlobal();
@@ -175,7 +175,7 @@ export class Editor {
           remove: () => {
             if (this.presets.remove(state.selected)) {
               refreshOptions();
-              this.hooks.onToast?.('Preset deleted');
+              this.hooks.onToast?.('프리셋 삭제됨');
             }
           }
         },
@@ -195,10 +195,10 @@ export class Editor {
             this.refresh();
             this.hooks.onToast?.(
               result.applied
-                ? 'Settings imported'
+                ? '설정 가져옴'
                 : result.imported.length
                   ? `Imported ${result.imported.length} preset(s)`
-                  : 'Nothing imported'
+                  : '가져온 항목 없음'
             );
           }
         },
@@ -212,7 +212,7 @@ export class Editor {
           reset: () => {
             this.presets.reset();
             this.refresh();
-            this.hooks.onToast?.('Reset to defaults');
+            this.hooks.onToast?.('기본값으로 재설정됨');
           }
         },
         'reset'
@@ -784,9 +784,9 @@ export class Editor {
     R(air, c, 'updraftExpand', 0, 3, 0.01, 'spiral opening');
     R(air, c, 'updraftGlow', 0, 4, 0.01, 'updraft glow');
     R(air, c, 'updraftInset', 0.05, 1.4, 0.01, 'rise inset, × footprint');
-    Editor.gradient(air, c, 'colorSmoke', 'Smoke colour');
-    Editor.gradient(air, c, 'colorEmber', 'Ember colour');
-    Editor.gradient(air, c, 'colorUpdraft', 'Updraft colour');
+    Editor.gradient(air, c, 'colorSmoke', '연기 색상');
+    Editor.gradient(air, c, 'colorEmber', '숯 색상');
+    Editor.gradient(air, c, 'colorUpdraft', '상승기류 색상');
 
     const chips = folder.addFolder('잿불');
     R(chips, c, 'cinderSize', 0.005, 0.5, 0.005, 'cinder size');
@@ -795,7 +795,7 @@ export class Editor {
     R(chips, c, 'cinderGravity', -50, 0, 0.1, 'cinder gravity');
     R(chips, c, 'breachCinders', 0, 30, 1, 'cinders on breach');
     R(chips, c, 'gutterCinders', 0, 30, 1, 'cinders on burn-down');
-    Editor.gradient(chips, c, 'colorCinder', 'Cinder colour');
+    Editor.gradient(chips, c, 'colorCinder', '잿불 색상');
 
     const impact = folder.addFolder('발광과 화염');
     R(impact, c, 'burstCinders', 0, 600, 1, 'bloom cinders');
@@ -1085,16 +1085,16 @@ export class Editor {
     R(water, c, 'moteGlow', 0, 4, 0.01, 'mote glow');
     R(water, c, 'moteInset', 0.05, 1.4, 0.01, 'rise inset, × footprint');
     R(water, c, 'moteSeat', 0.1, 8, 0.05, 'release height');
-    Editor.gradient(water, c, 'colorInk', 'Ink colour');
-    Editor.gradient(water, c, 'colorSpray', 'Spray colour');
-    Editor.gradient(water, c, 'colorMote', 'Marine snow colour');
+    Editor.gradient(water, c, 'colorInk', '먹 색상');
+    Editor.gradient(water, c, 'colorSpray', '물보라 색상');
+    Editor.gradient(water, c, 'colorMote', '바다눈 색상');
 
     const chips = folder.addFolder('부서진 바닥');
     R(chips, c, 'debrisSize', 0.005, 0.5, 0.005, 'chip size');
     R(chips, c, 'debrisSpeed', 0, 30, 0.1, 'chip speed');
     R(chips, c, 'debrisLifetime', 0.1, 6, 0.05, 'chip lifetime');
     R(chips, c, 'debrisGravity', -50, 0, 0.1, 'chip gravity');
-    Editor.gradient(chips, c, 'colorDebris', 'Chip colour');
+    Editor.gradient(chips, c, 'colorDebris', '파편 색상');
 
     const impact = folder.addFolder('찢어짐과 서 있는 왕관');
     R(impact, c, 'tearSpray', 0, 600, 1, 'tear spray');
@@ -1314,14 +1314,14 @@ export class Editor {
     R(sparks, c, 'sparkGravity', -50, 5, 0.1, 'spark gravity');
     R(sparks, c, 'sparkStretch', 0, 3, 0.01, 'spark stretch');
     R(sparks, c, 'sparkGlow', 0, 5, 0.01, 'spark glow');
-    Editor.gradient(sparks, c, 'colorSpark', 'Spark colour');
+    Editor.gradient(sparks, c, 'colorSpark', '불꽃 색상');
     R(sparks, c, 'moteRate', 0, 800, 1, 'front mote rate');
     R(sparks, c, 'moteSize', 0.005, 0.4, 0.005, 'mote size');
     R(sparks, c, 'moteSpeed', 0, 12, 0.05, 'mote speed');
     R(sparks, c, 'moteLifetime', 0.1, 8, 0.05, 'mote lifetime');
     R(sparks, c, 'moteRise', -3, 8, 0.05, 'mote rise');
     R(sparks, c, 'moteTurbulence', 0, 3, 0.01, 'mote turbulence');
-    Editor.gradient(sparks, c, 'colorMote', 'Mote colour');
+    Editor.gradient(sparks, c, 'colorMote', '부유 입자 색상');
     R(sparks, c, 'emberRate', 0, 600, 1, 'ember rate');
     R(sparks, c, 'emberSize', 0.005, 0.4, 0.005, 'ember size');
     R(sparks, c, 'emberSpeed', 0, 12, 0.05, 'ember speed');
@@ -1330,7 +1330,7 @@ export class Editor {
     R(sparks, c, 'emberTurbulence', 0, 3, 0.01, 'ember turbulence');
     R(sparks, c, 'emberGlow', 0, 5, 0.01, 'ember glow');
     R(sparks, c, 'emberStretch', 0, 3, 0.01, 'ember stretch');
-    Editor.gradient(sparks, c, 'colorEmber', 'Ember colour');
+    Editor.gradient(sparks, c, 'colorEmber', '숯 색상');
 
     const fieldFx = folder.addFolder('구체가 뿌리는 파티클');
     R(fieldFx, c, 'fieldSparkRate', 0, 1500, 1, 'surface spark rate');
@@ -1350,7 +1350,7 @@ export class Editor {
     R(fieldFx, c, 'smokeLifetime', 0.2, 8, 0.05, 'smoke life (global)');
     R(fieldFx, c, 'smokeOpacity', 0, 1, 0.005, 'smoke opacity');
     R(fieldFx, c, 'smokeRise', -2, 4, 0.01, 'smoke rise');
-    Editor.gradient(fieldFx, c, 'colorSmoke', 'Smoke colour');
+    Editor.gradient(fieldFx, c, 'colorSmoke', '연기 색상');
 
     const impact = folder.addFolder('발사 지점과 충격');
     R(impact, c, 'muzzleSize', 0.05, 6, 0.05, 'muzzle size');
@@ -1968,8 +1968,8 @@ export class Editor {
     R(shed, c, 'moteLifetime', 0.1, 8, 0.05, 'mote lifetime');
     R(shed, c, 'moteRise', -3, 8, 0.05, 'mote rise');
     R(shed, c, 'moteTurbulence', 0, 3, 0.01, 'mote turbulence');
-    Editor.gradient(shed, c, 'colorSpark', 'Spark colour');
-    Editor.gradient(shed, c, 'colorMote', 'Mote colour');
+    Editor.gradient(shed, c, 'colorSpark', '불꽃 색상');
+    Editor.gradient(shed, c, 'colorMote', '부유 입자 색상');
 
     const crater = folder.addFolder('발 아래 분화구');
     R(crater, c, 'fieldRadius', 0.2, 12, 0.05, 'radius');
@@ -2228,8 +2228,8 @@ export class Editor {
     R(shed, c, 'moteExpand', -1, 3, 0.01, 'orbit opening');
     R(shed, c, 'moteTurbulence', 0, 3, 0.01, 'mote turbulence');
     R(shed, c, 'moteGlow', 0, 4, 0.01, 'mote glow');
-    Editor.gradient(shed, c, 'colorSmoke', 'Smoke colour');
-    Editor.gradient(shed, c, 'colorMote', 'Mote colour');
+    Editor.gradient(shed, c, 'colorSmoke', '연기 색상');
+    Editor.gradient(shed, c, 'colorMote', '부유 입자 색상');
 
     const ground = folder.addFolder('발 아래 고리');
     R(ground, c, 'groundRate', 0, 20, 0.1, 'rings / sec');
@@ -2473,8 +2473,8 @@ export class Editor {
     R(shed, c, 'smokeRise', -3, 5, 0.05, 'smoke rise');
     R(shed, c, 'smokeTurbulence', 0, 3, 0.01, 'smoke turbulence');
     R(shed, c, 'smokeGlow', 0, 3, 0.01, 'smoke glow');
-    Editor.gradient(shed, c, 'colorEmber', 'Ember colour');
-    Editor.gradient(shed, c, 'colorSmoke', 'Smoke colour');
+    Editor.gradient(shed, c, 'colorEmber', '숯 색상');
+    Editor.gradient(shed, c, 'colorSmoke', '연기 색상');
 
     const ground = folder.addFolder('발 아래 그을음');
     R(ground, c, 'groundRate', 0, 20, 0.1, 'scorches / sec');
