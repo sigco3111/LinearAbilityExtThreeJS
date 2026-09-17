@@ -73,7 +73,7 @@ export class Editor {
    * at the moment of the cast, so switching it applies to the very next click.
    */
   static castAnimation(folder, object) {
-    return folder.add(object, 'castAnim', CAST_ANIMATIONS).name('cast animation');
+    return folder.add(object, 'castAnim', CAST_ANIMATIONS).name('시전 애니메이션');
   }
 
   /**
@@ -87,10 +87,10 @@ export class Editor {
    */
   static gradient(folder, object, prefix, title) {
     const group = folder.addFolder(title);
-    group.addColor(object, `${prefix}A`).name('birth');
-    group.addColor(object, `${prefix}B`).name('early');
-    group.addColor(object, `${prefix}C`).name('late');
-    group.addColor(object, `${prefix}D`).name('death');
+    group.addColor(object, `${prefix}A`).name('탄생');
+    group.addColor(object, `${prefix}B`).name('초반');
+    group.addColor(object, `${prefix}C`).name('후반');
+    group.addColor(object, `${prefix}D`).name('소멸');
     return group;
   }
 
@@ -108,22 +108,22 @@ export class Editor {
   /* ------------------------------------------------------------------ */
 
   _buildPresets() {
-    const folder = this.gui.addFolder('Presets');
+    const folder = this.gui.addFolder('프리셋');
     const state = this._presetState;
 
     let selector = folder
       .add(state, 'selected', this.presets.names.length ? this.presets.names : [''])
-      .name('preset');
+      .name('프리셋');
 
     // lil-gui rebuilds the controller when the option list changes, so the
     // reference has to be replaced rather than mutated.
     const refreshOptions = () => {
       const names = this.presets.names;
-      selector = selector.options(names.length ? names : ['']).name('preset');
+      selector = selector.options(names.length ? names : ['']).name('프리셋');
       selector.setValue(names.includes(state.selected) ? state.selected : (names[0] ?? ''));
     };
 
-    folder.add(state, 'name').name('name');
+    folder.add(state, 'name').name('이름');
 
     folder
       .add(
@@ -137,7 +137,7 @@ export class Editor {
         },
         'save'
       )
-      .name('Save preset');
+      .name('프리셋 저장');
 
     folder
       .add(
@@ -151,7 +151,7 @@ export class Editor {
         },
         'load'
       )
-      .name('Load preset');
+      .name('프리셋 불러오기');
 
     folder
       .add(
@@ -167,7 +167,7 @@ export class Editor {
         },
         'duplicate'
       )
-      .name('Duplicate');
+      .name('복제');
 
     folder
       .add(
@@ -181,10 +181,10 @@ export class Editor {
         },
         'remove'
       )
-      .name('Delete');
+      .name('삭제');
 
-    folder.add({ exportOne: () => this.presets.exportJSON() }, 'exportOne').name('Export current (JSON)');
-    folder.add({ exportAll: () => this.presets.exportAll() }, 'exportAll').name('Export all presets');
+    folder.add({ exportOne: () => this.presets.exportJSON() }, 'exportOne').name('현재 설정 내보내기 (JSON)');
+    folder.add({ exportAll: () => this.presets.exportAll() }, 'exportAll').name('모든 프리셋 내보내기');
 
     folder
       .add(
@@ -204,7 +204,7 @@ export class Editor {
         },
         'import'
       )
-      .name('Import JSON…');
+      .name('JSON 가져오기…');
 
     folder
       .add(
@@ -217,13 +217,13 @@ export class Editor {
         },
         'reset'
       )
-      .name('Reset to defaults');
+      .name('기본값으로 재설정');
 
     this.presetFolder = folder;
   }
 
   _buildGlobal() {
-    const folder = this.gui.addFolder('Global');
+    const folder = this.gui.addFolder('전역');
     const g = settings.global;
     const R = Editor.range;
 
@@ -240,14 +240,14 @@ export class Editor {
     R(folder, g, 'fresnel', 0, 3, 0.01, 'fresnel strength');
     R(folder, g, 'distortion', 0, 3, 0.01, 'heat distortion');
 
-    const particles = folder.addFolder('Particles');
+    const particles = folder.addFolder('파티클');
     R(particles, g, 'particleCount', 0, 3, 0.01, 'count');
     R(particles, g, 'particleLifetime', 0.1, 3, 0.01, 'lifetime');
     R(particles, g, 'particleSpeed', 0.1, 3, 0.01, 'speed');
     R(particles, g, 'particleSize', 0.1, 3, 0.01, 'size');
     R(particles, g, 'emissionRate', 0, 3, 0.01, 'emission rate');
 
-    const lighting = folder.addFolder('Lighting & impact');
+    const lighting = folder.addFolder('조명과 충격');
     R(lighting, g, 'lightIntensity', 0, 4, 0.01, 'light intensity');
     R(lighting, g, 'lightRadius', 0.1, 4, 0.01, 'light radius');
     R(lighting, g, 'explosionIntensity', 0, 3, 0.01, 'impact intensity');
@@ -260,11 +260,11 @@ export class Editor {
   /* ------------------------------------------------------------------ */
 
   _buildAim() {
-    const folder = this.gui.addFolder('➤  Aim indicator');
+    const folder = this.gui.addFolder('➤  조준 표시');
     const a = settings.aim;
     const R = Editor.range;
 
-    const shape = folder.addFolder('Silhouette (metres)');
+    const shape = folder.addFolder('실루엣 (미터)');
     R(shape, a, 'shaftWidth', 0.05, 2, 0.01, 'shaft half-width');
     R(shape, a, 'headLength', 0.2, 8, 0.05, 'head length');
     R(shape, a, 'headWidth', 0.1, 5, 0.01, 'head half-width');
@@ -272,18 +272,18 @@ export class Editor {
     R(shape, a, 'startOffset', 0, 5, 0.05, 'gap at the caster');
     R(shape, a, 'height', 0.005, 0.4, 0.005, 'hover height');
 
-    const look = folder.addFolder('Rendering');
+    const look = folder.addFolder('렌더링');
     R(look, a, 'edge', 0.01, 0.5, 0.005, 'outline thickness');
     R(look, a, 'edgeGlow', 0, 8, 0.05, 'outline glow');
     R(look, a, 'softness', 0.005, 0.5, 0.005, 'edge softness');
     R(look, a, 'fill', 0, 1.5, 0.01, 'interior fill');
     R(look, a, 'fillFalloff', 0.1, 4, 0.05, 'fill falloff');
     R(look, a, 'opacity', 0, 2, 0.01, 'opacity');
-    look.addColor(a, 'colorCore').name('core colour');
-    look.addColor(a, 'colorEdge').name('edge colour');
-    look.addColor(a, 'colorInvalid').name('too-close colour');
+    look.addColor(a, 'colorCore').name('코어 색상');
+    look.addColor(a, 'colorEdge').name('가장자리 색상');
+    look.addColor(a, 'colorInvalid').name('너무 가까울 때 색상');
 
-    const energy = folder.addFolder('Energy & frost');
+    const energy = folder.addFolder('에너지와 서리');
     R(energy, a, 'stripes', 0, 4, 0.01, 'chevrons / metre');
     R(energy, a, 'stripeSharp', 0, 1, 0.01, 'chevron sharpness');
     R(energy, a, 'stripeDepth', 0, 1, 0.01, 'chevron depth');
@@ -296,7 +296,7 @@ export class Editor {
     R(energy, a, 'crystals', 0, 2, 0.01, 'frost plates');
     R(energy, a, 'crystalScale', 0.2, 10, 0.05, 'plate scale');
 
-    const furniture = folder.addFolder('Rings & rosette');
+    const furniture = folder.addFolder('고리와 장미창');
     R(furniture, a, 'baseRing', 0, 3, 0.01, 'base ring radius');
     R(furniture, a, 'baseRingWidth', 0.005, 0.4, 0.005, 'base ring width');
     R(furniture, a, 'tipGlyph', 0, 2, 0.01, 'tip rosette');
@@ -319,11 +319,11 @@ export class Editor {
    * overlay or like something the caster is doing.
    */
   _buildZone() {
-    const folder = this.gui.addFolder('◎  Far-cast circle');
+    const folder = this.gui.addFolder('◎  원거리 시전 원');
     const z = settings.zone;
     const R = Editor.range;
 
-    const edge = folder.addFolder('The boundary (metres)');
+    const edge = folder.addFolder('경계선 (미터)');
     R(edge, z, 'boundary', 0.02, 2, 0.01, 'band thickness');
     R(edge, z, 'boundaryBias', 0, 1, 0.01, 'band bias out/in');
     R(edge, z, 'boundaryGlow', 0, 8, 0.05, 'band glow');
@@ -331,7 +331,7 @@ export class Editor {
     R(edge, z, 'softness', 0.005, 0.4, 0.005, 'edge softness');
     R(edge, z, 'height', 0.005, 0.4, 0.005, 'hover height');
 
-    const inside = folder.addFolder('The interior');
+    const inside = folder.addFolder('내부');
     R(inside, z, 'fill', 0, 1.5, 0.01, 'interior fill');
     R(inside, z, 'fillFalloff', 0.1, 5, 0.05, 'fill falloff');
     R(inside, z, 'rings', 0, 12, 0.1, 'contour rings');
@@ -343,7 +343,7 @@ export class Editor {
     R(inside, z, 'noise', 0, 1.5, 0.01, 'break-up');
     R(inside, z, 'noiseScale', 0.1, 8, 0.05, 'break-up scale');
 
-    const furniture = folder.addFolder('Ticks, sweep & reticle');
+    const furniture = folder.addFolder('눈금, 스윕, 레티클');
     R(furniture, z, 'ticks', 0, 96, 1, 'boundary ticks');
     R(furniture, z, 'tickLength', 0.05, 3, 0.01, 'tick length');
     R(furniture, z, 'tickWidth', 0.02, 0.9, 0.01, 'tick duty');
@@ -357,7 +357,7 @@ export class Editor {
     R(furniture, z, 'pulse', 0, 1, 0.01, 'pulse');
     R(furniture, z, 'pulseSpeed', 0, 8, 0.05, 'pulse speed');
 
-    const reach = folder.addFolder('The reach ring');
+    const reach = folder.addFolder('도달 고리');
     R(reach, z, 'reach', 0, 3, 0.01, 'reach brightness');
     R(reach, z, 'reachWidth', 0.005, 0.5, 0.005, 'reach width');
     R(reach, z, 'reachDashes', 0, 200, 1, 'dashes');
@@ -365,13 +365,13 @@ export class Editor {
     R(reach, z, 'reachSpin', -1, 1, 0.005, 'dash creep');
     R(reach, z, 'reachLead', 0, 3, 0.01, 'lead marker');
 
-    const look = folder.addFolder('Rendering');
+    const look = folder.addFolder('렌더링');
     R(look, z, 'opacity', 0, 2, 0.01, 'opacity');
     R(look, z, 'reveal', 0.01, 1, 0.005, 'snap-out time');
     R(look, z, 'snap', 1, 2, 0.01, 'snap overshoot');
-    look.addColor(z, 'colorCore').name('core colour');
-    look.addColor(z, 'colorEdge').name('fill colour');
-    look.addColor(z, 'colorInvalid').name('too-close colour');
+    look.addColor(z, 'colorCore').name('코어 색상');
+    look.addColor(z, 'colorEdge').name('채움 색상');
+    look.addColor(z, 'colorInvalid').name('너무 가까울 때 색상');
   }
 
 
@@ -392,11 +392,11 @@ export class Editor {
    * that gets built can never disagree.
    */
   _buildGate() {
-    const folder = this.gui.addFolder('⌂  Gate template');
+    const folder = this.gui.addFolder('⌂  관문 템플릿');
     const g = settings.gate;
     const R = Editor.range;
 
-    const threshold = folder.addFolder('The threshold (metres)');
+    const threshold = folder.addFolder('문지방 (미터)');
     R(threshold, g, 'thresholdDepth', 0.1, 3, 0.01, 'slot half-depth');
     R(threshold, g, 'jambPad', 0.1, 2.5, 0.01, 'jamb pad radius');
     R(threshold, g, 'edge', 0.01, 0.5, 0.005, 'outline thickness');
@@ -407,7 +407,7 @@ export class Editor {
     R(threshold, g, 'tickWidth', 0.005, 0.4, 0.005, 'rung duty');
     R(threshold, g, 'height', 0.005, 0.4, 0.005, 'hover height');
 
-    const ghost = folder.addFolder('The standing arch ghost');
+    const ghost = folder.addFolder('서 있는 아치 유령');
     R(ghost, g, 'ghost', 0, 3, 0.01, 'master strength');
     R(ghost, g, 'ghostLine', 0.01, 0.5, 0.005, 'contour thickness');
     R(ghost, g, 'ghostGlow', 0, 8, 0.05, 'contour glow');
@@ -420,7 +420,7 @@ export class Editor {
     R(ghost, g, 'ghostNoise', 0, 1.5, 0.01, 'break-up');
     R(ghost, g, 'ghostNoiseScale', 0.1, 6, 0.05, 'break-up scale');
 
-    const reach = folder.addFolder('The reach ring');
+    const reach = folder.addFolder('도달 고리');
     R(reach, g, 'reach', 0, 3, 0.01, 'reach brightness');
     R(reach, g, 'reachWidth', 0.005, 0.5, 0.005, 'reach width');
     R(reach, g, 'reachDashes', 0, 200, 1, 'dashes');
@@ -428,14 +428,14 @@ export class Editor {
     R(reach, g, 'reachSpin', -1, 1, 0.005, 'dash creep');
     R(reach, g, 'reachLead', 0, 3, 0.01, 'lead marker');
 
-    const look = folder.addFolder('Rendering');
+    const look = folder.addFolder('렌더링');
     R(look, g, 'pulse', 0, 1, 0.01, 'pulse');
     R(look, g, 'pulseSpeed', 0, 8, 0.05, 'pulse speed');
     R(look, g, 'opacity', 0, 2, 0.01, 'opacity');
     R(look, g, 'reveal', 0.01, 1, 0.005, 'draw-out time');
-    look.addColor(g, 'colorCore').name('core colour');
-    look.addColor(g, 'colorEdge').name('fill colour');
-    look.addColor(g, 'colorInvalid').name('too-close colour');
+    look.addColor(g, 'colorCore').name('코어 색상');
+    look.addColor(g, 'colorEdge').name('채움 색상');
+    look.addColor(g, 'colorInvalid').name('너무 가까울 때 색상');
   }
 
   /* ------------------------------------------------------------------ */
@@ -451,15 +451,15 @@ export class Editor {
    * upright the instant the template appears.
    */
   _buildRingTemplate() {
-    const folder = this.gui.addFolder('◎  Ring template');
+    const folder = this.gui.addFolder('◎  고리 템플릿');
     const g = settings.ring;
     const R = Editor.range;
 
-    const contour = folder.addFolder('The contour');
+    const contour = folder.addFolder('윤곽');
     R(contour, g, 'lobes', 0, 16, 1, 'lobes');
     R(contour, g, 'lobeDepth', 0, 0.3, 0.005, 'lobe depth');
 
-    const sigil = folder.addFolder('The sigil (metres)');
+    const sigil = folder.addFolder('시길 (미터)');
     R(sigil, g, 'band', 0.01, 0.6, 0.005, 'contour thickness');
     R(sigil, g, 'bandGlow', 0, 8, 0.05, 'contour glow');
     R(sigil, g, 'softness', 0.005, 0.4, 0.005, 'edge softness');
@@ -477,7 +477,7 @@ export class Editor {
     R(sigil, g, 'sweep', 0.05, 1, 0.01, 'drawn from the foot over');
     R(sigil, g, 'height', 0.005, 0.4, 0.005, 'hover height');
 
-    const ghost = folder.addFolder('The tipping ghost');
+    const ghost = folder.addFolder('기울어지는 유령');
     R(ghost, g, 'ghost', 0, 3, 0.01, 'master strength');
     R(ghost, g, 'ghostLine', 0.01, 0.5, 0.005, 'contour thickness');
     R(ghost, g, 'ghostGlow', 0, 8, 0.05, 'contour glow');
@@ -490,7 +490,7 @@ export class Editor {
     R(ghost, g, 'ghostNoiseScale', 0.1, 6, 0.05, 'break-up scale');
     R(ghost, g, 'ghostRise', 0.05, 1, 0.01, 'stood up over');
 
-    const reach = folder.addFolder('The reach ring');
+    const reach = folder.addFolder('도달 고리');
     R(reach, g, 'reach', 0, 3, 0.01, 'reach brightness');
     R(reach, g, 'reachWidth', 0.005, 0.5, 0.005, 'reach width');
     R(reach, g, 'reachDashes', 0, 200, 1, 'dashes');
@@ -498,14 +498,14 @@ export class Editor {
     R(reach, g, 'reachSpin', -1, 1, 0.005, 'dash creep');
     R(reach, g, 'reachLead', 0, 3, 0.01, 'lead marker');
 
-    const look = folder.addFolder('Rendering');
+    const look = folder.addFolder('렌더링');
     R(look, g, 'pulse', 0, 1, 0.01, 'pulse');
     R(look, g, 'pulseSpeed', 0, 8, 0.05, 'pulse speed');
     R(look, g, 'opacity', 0, 2, 0.01, 'opacity');
     R(look, g, 'reveal', 0.01, 1, 0.005, 'draw-out time');
-    look.addColor(g, 'colorCore').name('core colour');
-    look.addColor(g, 'colorEdge').name('fill colour');
-    look.addColor(g, 'colorInvalid').name('too-close colour');
+    look.addColor(g, 'colorCore').name('코어 색상');
+    look.addColor(g, 'colorEdge').name('채움 색상');
+    look.addColor(g, 'colorInvalid').name('너무 가까울 때 색상');
   }
 
   /* ------------------------------------------------------------------ */
@@ -521,11 +521,11 @@ export class Editor {
    * ground is carried by the reach ring instead.
    */
   _buildScribeTemplate() {
-    const folder = this.gui.addFolder('◌  Scribe template');
+    const folder = this.gui.addFolder('◌  필기 템플릿');
     const g = settings.scribe;
     const R = Editor.range;
 
-    const circle = folder.addFolder('The circle (metres)');
+    const circle = folder.addFolder('원 (미터)');
     R(circle, g, 'line', 0.01, 0.5, 0.005, 'contour thickness');
     R(circle, g, 'lineGlow', 0, 8, 0.05, 'contour glow');
     R(circle, g, 'fill', 0, 1, 0.01, 'interior wash');
@@ -535,7 +535,7 @@ export class Editor {
     R(circle, g, 'scroll', -6, 6, 0.05, 'ember creep (m/s)');
     R(circle, g, 'sweep', 0.05, 1, 0.01, 'drawn from the foot over');
 
-    const reach = folder.addFolder('The reach ring');
+    const reach = folder.addFolder('도달 고리');
     R(reach, g, 'reach', 0, 3, 0.01, 'reach brightness');
     R(reach, g, 'reachWidth', 0.005, 0.5, 0.005, 'reach width');
     R(reach, g, 'reachDashes', 0, 200, 1, 'dashes');
@@ -543,15 +543,15 @@ export class Editor {
     R(reach, g, 'reachSpin', -1, 1, 0.005, 'dash creep');
     R(reach, g, 'reachLead', 0, 3, 0.01, 'lead marker');
 
-    const look = folder.addFolder('Rendering');
+    const look = folder.addFolder('렌더링');
     R(look, g, 'pulse', 0, 1, 0.01, 'pulse');
     R(look, g, 'pulseSpeed', 0, 8, 0.05, 'pulse speed');
     R(look, g, 'opacity', 0, 2, 0.01, 'opacity');
     R(look, g, 'reveal', 0.01, 1, 0.005, 'draw-out time');
     R(look, g, 'height', 0.005, 0.4, 0.005, 'reach hover height');
-    look.addColor(g, 'colorCore').name('contour core');
-    look.addColor(g, 'colorEdge').name('wash colour');
-    look.addColor(g, 'colorInvalid').name('too-close colour');
+    look.addColor(g, 'colorCore').name('윤곽 코어');
+    look.addColor(g, 'colorEdge').name('물결 색상');
+    look.addColor(g, 'colorInvalid').name('너무 가까울 때 색상');
   }
 
   /* ------------------------------------------------------------------ */
@@ -568,11 +568,11 @@ export class Editor {
    * **Combustion front & burn-down** is how the fire arrives and how it leaves.
    */
   _buildPyre() {
-    const folder = this.gui.addFolder('☼  Pyre Crown');
+    const folder = this.gui.addFolder('☼  화염 왕관');
     const c = settings.pyre;
     const R = Editor.range;
 
-    const cast = folder.addFolder('The cast');
+    const cast = folder.addFolder('시전');
     R(cast, c, 'zoneRadius', 0.5, 14, 0.05, 'footprint radius');
     R(cast, c, 'range', 2, 50, 0.1, 'max range');
     R(cast, c, 'minRange', 0, 10, 0.1, 'min range');
@@ -586,14 +586,14 @@ export class Editor {
     R(cast, c, 'cooldown', 0, 8, 0.05, 'cooldown');
     Editor.castAnimation(cast, c);
 
-    const hand = folder.addFolder('Where the fire leaves the hand');
+    const hand = folder.addFolder('손에서 불이 나가는 곳');
     R(hand, c, 'handHeight', 0, 3, 0.01, 'hand height');
     R(hand, c, 'handForward', -1, 3, 0.01, 'hand forward');
     R(hand, c, 'handSide', -1.5, 1.5, 0.01, 'hand lateral');
     R(hand, c, 'castFlash', 0, 2, 0.01, 'flash on release');
-    hand.addColor(c, 'colorCastFlash').name('release flash colour');
+    hand.addColor(c, 'colorCastFlash').name('해제 섬광 색상');
 
-    const fill = folder.addFolder('Filling the footprint');
+    const fill = folder.addFolder('발자국 채우기');
     R(fill, c, 'spikeCount', 1, 320, 1, 'blades');
     R(fill, c, 'density', 0.1, 2, 0.01, 'density');
     R(fill, c, 'ringShare', 0, 1, 0.01, 'share on the wall');
@@ -606,7 +606,7 @@ export class Editor {
     R(fill, c, 'skirtBias', 0.2, 3, 0.01, 'skirt crowding');
     R(fill, c, 'coreSpread', 0.01, 0.6, 0.005, 'pyre cluster, × footprint');
 
-    const shape = folder.addFolder('Silhouette');
+    const shape = folder.addFolder('실루엣');
     R(shape, c, 'ringHeight', 0.2, 12, 0.05, 'wall height');
     R(shape, c, 'ringWave', 0, 1, 0.01, 'crest unevenness');
     R(shape, c, 'skirtHeight', 0.05, 6, 0.05, 'skirt height');
@@ -621,7 +621,7 @@ export class Editor {
     R(shape, c, 'rubble', 0, 1, 0.01, 'rubble fraction');
     R(shape, c, 'rubbleScale', 0.05, 1, 0.01, 'rubble height');
 
-    const blade = folder.addFolder('The blade');
+    const blade = folder.addFolder('칼날');
     R(blade, c, 'radius', 0.05, 1.2, 0.005, 'base radius');
     R(blade, c, 'radiusJitter', 0, 1.5, 0.01, 'radius jitter');
     R(blade, c, 'belly', 0.4, 3, 0.01, 'belly (1 = a cone)');
@@ -631,7 +631,7 @@ export class Editor {
     R(blade, c, 'roughness', 0, 1, 0.01, 'facet roughness');
     R(blade, c, 'bend', 0, 1.5, 0.01, 'bend');
 
-    const bloom = folder.addFolder('The eruption');
+    const bloom = folder.addFolder('분출');
     R(bloom, c, 'sweepTime', 0, 3, 0.01, 'sweep around the ring');
     R(bloom, c, 'skirtDelay', 0, 2, 0.01, 'skirt delay');
     R(bloom, c, 'skirtWave', 0, 2, 0.01, 'skirt wave');
@@ -644,7 +644,7 @@ export class Editor {
     R(bloom, c, 'creepTime', 0.05, 6, 0.05, 'creep time');
     R(bloom, c, 'sink', 0, 1.5, 0.01, 'sink as it dies');
 
-    const material = folder.addFolder('Burning fire');
+    const material = folder.addFolder('불태우기');
     R(material, c, 'opacity', 0, 1, 0.01, 'opacity');
     R(material, c, 'flameGain', 0, 4, 0.01, 'heat');
     R(material, c, 'sharp', 0, 1, 0.01, 'tongue edges (0 = a wash)');
@@ -667,15 +667,15 @@ export class Editor {
     R(material, c, 'glow', 0, 4, 0.01, 'glow');
     R(material, c, 'birthGlow', 0, 6, 0.01, 'birth flash');
     R(material, c, 'birthFade', 0.02, 3, 0.01, 'birth fade');
-    material.addColor(c, 'colorChar').name('voids');
-    material.addColor(c, 'colorEmber').name('deep red');
-    material.addColor(c, 'colorFlame').name('orange');
-    material.addColor(c, 'colorCore').name('white-hot');
-    material.addColor(c, 'colorRock').name('stone');
-    material.addColor(c, 'colorRim').name('silhouette');
-    material.addColor(c, 'colorAsh').name('ash');
+    material.addColor(c, 'colorChar').name('공동');
+    material.addColor(c, 'colorEmber').name('짙은 빨강');
+    material.addColor(c, 'colorFlame').name('주황');
+    material.addColor(c, 'colorCore').name('백열');
+    material.addColor(c, 'colorRock').name('돌');
+    material.addColor(c, 'colorRim').name('실루엣');
+    material.addColor(c, 'colorAsh').name('재');
 
-    const growth = folder.addFolder('Combustion front & burn-down');
+    const growth = folder.addFolder('연소 전선과 그을림');
     R(growth, c, 'frontRough', 0, 1.5, 0.01, 'front raggedness');
     R(growth, c, 'frontWidth', 0.01, 0.8, 0.01, 'front width');
     R(growth, c, 'frontGlow', 0, 8, 0.05, 'front glow');
@@ -684,7 +684,7 @@ export class Editor {
     R(growth, c, 'charGlow', 0, 8, 0.05, 'ember rim glow');
     R(growth, c, 'ashDrain', 0, 1, 0.01, 'how far the fire drains out');
 
-    const field = folder.addFolder('The crater');
+    const field = folder.addFolder('분화구');
     R(field, c, 'fieldBoundary', 0.02, 2, 0.01, 'band thickness');
     R(field, c, 'fieldBoundaryGlow', 0, 8, 0.05, 'band glow');
     R(field, c, 'fieldFill', 0, 2, 0.01, 'interior fill');
@@ -709,10 +709,10 @@ export class Editor {
     R(field, c, 'fieldPulseSpeed', 0, 10, 0.05, 'pulse speed');
     R(field, c, 'fieldOpacity', 0, 2, 0.01, 'opacity');
     R(field, c, 'fieldHeight', 0.005, 0.4, 0.005, 'hover height');
-    field.addColor(c, 'colorField').name('crust & runnels');
-    field.addColor(c, 'colorFieldEdge').name('band & seams');
+    field.addColor(c, 'colorField').name('지각과 물줄기');
+    field.addColor(c, 'colorFieldEdge').name('테두리와 이음새');
 
-    const veil = folder.addFolder('The wall of flame');
+    const veil = folder.addFolder('불꽃의 벽');
     R(veil, c, 'veil', 0, 2, 0.01, 'opacity (0 hides it)');
     R(veil, c, 'veilHeight', 0.1, 8, 0.05, 'height');
     R(veil, c, 'veilRadius', 0.5, 1.6, 0.005, 'seat, × footprint');
@@ -725,11 +725,11 @@ export class Editor {
     R(veil, c, 'veilFalloff', 0.2, 6, 0.05, 'thinning with height');
     R(veil, c, 'veilSpin', -1, 1, 0.005, 'rotation');
     R(veil, c, 'veilSoftFade', 0.02, 3, 0.01, 'soft intersection');
-    veil.addColor(c, 'colorVeil').name('body');
-    veil.addColor(c, 'colorVeilCrest').name('crest (at the floor)');
-    veil.addColor(c, 'colorVeilSmoke').name('smoke (at the top)');
+    veil.addColor(c, 'colorVeil').name('몸체');
+    veil.addColor(c, 'colorVeilCrest').name('마루 (바닥 부근)');
+    veil.addColor(c, 'colorVeilSmoke').name('연기 (꼭대기 부근)');
 
-    const haze = folder.addFolder('Heat haze');
+    const haze = folder.addFolder('열 무리');
     R(haze, c, 'haze', 0, 4, 0.01, 'strength (0 hides it)');
     R(haze, c, 'hazeHeight', 0.2, 12, 0.05, 'height');
     R(haze, c, 'hazeRadius', 0.5, 2.5, 0.01, 'seat, × footprint');
@@ -737,7 +737,7 @@ export class Editor {
     R(haze, c, 'hazeSpeed', -6, 6, 0.01, 'rise speed');
     R(haze, c, 'hazeFalloff', 0.2, 6, 0.05, 'thinning with height');
 
-    const ground = folder.addFolder('Scorch & fractures');
+    const ground = folder.addFolder('그을음과 균열');
     R(ground, c, 'trailScorchRate', 0.05, 10, 0.05, 'trail scorch / metre');
     R(ground, c, 'trailScorchRadius', 0.05, 6, 0.05, 'trail scorch radius');
     R(ground, c, 'scorchSpread', 0.2, 4, 0.05, 'impact scorch, × footprint');
@@ -751,13 +751,13 @@ export class Editor {
     R(ground, c, 'fractureIntensity', 0, 3, 0.01, 'fracture intensity');
     R(ground, c, 'shockRadius', 0.5, 25, 0.1, 'shockwave radius');
     R(ground, c, 'ringRate', 0, 12, 0.1, 'heat rings / sec');
-    ground.addColor(c, 'colorScorch').name('burnt ground');
-    ground.addColor(c, 'colorScorchEmber').name('cooling embers');
-    ground.addColor(c, 'colorFracture').name('molten fracture');
-    ground.addColor(c, 'colorShockA').name('shockwave ring');
-    ground.addColor(c, 'colorShockB').name('shockwave crest');
+    ground.addColor(c, 'colorScorch').name('탄 땅');
+    ground.addColor(c, 'colorScorchEmber').name('식어가는 숯');
+    ground.addColor(c, 'colorFracture').name('녹은 균열');
+    ground.addColor(c, 'colorShockA').name('충격파 고리');
+    ground.addColor(c, 'colorShockB').name('충격파 마루');
 
-    const air = folder.addFolder('Smoke, embers & the updraft');
+    const air = folder.addFolder('연기, 숯, 상승기류');
     R(air, c, 'smokeRate', 0, 900, 1, 'smoke rate');
     R(air, c, 'smokeSize', 0.05, 4, 0.01, 'smoke size');
     R(air, c, 'smokeSpeed', 0, 10, 0.05, 'smoke speed');
@@ -788,7 +788,7 @@ export class Editor {
     Editor.gradient(air, c, 'colorEmber', 'Ember colour');
     Editor.gradient(air, c, 'colorUpdraft', 'Updraft colour');
 
-    const chips = folder.addFolder('Cinders');
+    const chips = folder.addFolder('잿불');
     R(chips, c, 'cinderSize', 0.005, 0.5, 0.005, 'cinder size');
     R(chips, c, 'cinderSpeed', 0, 30, 0.1, 'cinder speed');
     R(chips, c, 'cinderLifetime', 0.1, 6, 0.05, 'cinder lifetime');
@@ -797,7 +797,7 @@ export class Editor {
     R(chips, c, 'gutterCinders', 0, 30, 1, 'cinders on burn-down');
     Editor.gradient(chips, c, 'colorCinder', 'Cinder colour');
 
-    const impact = folder.addFolder('Bloom & blaze');
+    const impact = folder.addFolder('발광과 화염');
     R(impact, c, 'burstCinders', 0, 600, 1, 'bloom cinders');
     R(impact, c, 'burstSmoke', 0, 400, 1, 'bloom smoke');
     R(impact, c, 'burstEmbers', 0, 600, 1, 'bloom embers');
@@ -806,13 +806,13 @@ export class Editor {
     R(impact, c, 'holdShake', 0, 0.5, 0.005, 'blaze rumble');
     R(impact, c, 'impactFlash', 0, 2, 0.01, 'screen flash');
     R(impact, c, 'rumble', 0, 0.5, 0.005, 'travel rumble');
-    impact.addColor(c, 'colorFlash').name('bloom flash colour');
+    impact.addColor(c, 'colorFlash').name('발광 섬광 색상');
 
-    const light = folder.addFolder('Dynamic light');
+    const light = folder.addFolder('동적 광원');
     R(light, c, 'lightIntensity', 0, 120, 0.5, 'light intensity');
     R(light, c, 'lightRadius', 0.5, 50, 0.1, 'light radius');
     R(light, c, 'lightHeight', 0, 1, 0.01, 'height up the crown');
-    light.addColor(c, 'lightColor').name('light colour');
+    light.addColor(c, 'lightColor').name('광원 색상');
 
     this.pyreFolder = folder;
   }
@@ -839,11 +839,11 @@ export class Editor {
    * exact middle of the footprint, whatever the footprint is.
    */
   _buildKraken() {
-    const folder = this.gui.addFolder('🐙  Kraken Crown');
+    const folder = this.gui.addFolder('🐙  크라켄 왕관');
     const c = settings.kraken;
     const R = Editor.range;
 
-    const cast = folder.addFolder('The cast');
+    const cast = folder.addFolder('시전');
     R(cast, c, 'zoneRadius', 0.5, 14, 0.05, 'footprint radius');
     R(cast, c, 'range', 2, 50, 0.1, 'max range');
     R(cast, c, 'minRange', 0, 10, 0.1, 'min range');
@@ -857,14 +857,14 @@ export class Editor {
     R(cast, c, 'cooldown', 0, 8, 0.05, 'cooldown');
     Editor.castAnimation(cast, c);
 
-    const hand = folder.addFolder('Where the cast leaves the hand');
+    const hand = folder.addFolder('시전이 손에서 나가는 곳');
     R(hand, c, 'handHeight', 0, 3, 0.01, 'hand height');
     R(hand, c, 'handForward', -1, 3, 0.01, 'hand forward');
     R(hand, c, 'handSide', -1.5, 1.5, 0.01, 'hand lateral');
     R(hand, c, 'castFlash', 0, 2, 0.01, 'flash on release');
-    hand.addColor(c, 'colorCastFlash').name('release flash colour');
+    hand.addColor(c, 'colorCastFlash').name('해제 섬광 색상');
 
-    const fill = folder.addFolder('Filling the ring');
+    const fill = folder.addFolder('고리 채우기');
     R(fill, c, 'armCount', 1, 20, 1, 'heavy arms');
     R(fill, c, 'whipCount', 0, 20, 1, 'thin whips');
     R(fill, c, 'density', 0.1, 2, 0.01, 'density');
@@ -873,7 +873,7 @@ export class Editor {
     R(fill, c, 'whipSeat', 0.2, 1.6, 0.01, 'whip seat, × footprint');
     R(fill, c, 'whipScatter', 0, 0.6, 0.005, 'whip seat jitter');
 
-    const arm = folder.addFolder('The arm');
+    const arm = folder.addFolder('팔');
     R(arm, c, 'reach', 0.3, 1.8, 0.01, 'reach (1 = dead centre)');
     R(arm, c, 'lengthJitter', 0, 1, 0.01, 'length jitter');
     R(arm, c, 'thickness', 0.05, 1.2, 0.01, 'base radius');
@@ -889,7 +889,7 @@ export class Editor {
     R(arm, c, 'armRoughness', 0, 1, 0.01, 'muscle segmentation');
     R(arm, c, 'flatten', 0.35, 1.4, 0.01, 'cross-section flattening');
 
-    const pose = folder.addFolder('The poses');
+    const pose = folder.addFolder('자세');
     R(pose, c, 'coilLean', -2, 2, 0.01, 'coil lean');
     R(pose, c, 'coilCurl', 0, 10, 0.05, 'coil curl');
     R(pose, c, 'idleLean', -3, 3, 0.01, 'idle lean');
@@ -903,7 +903,7 @@ export class Editor {
     R(pose, c, 'settleSpeed', 2, 60, 0.5, 'ring-out speed');
     R(pose, c, 'twist', -3, 3, 0.01, 'roll from rift to point');
 
-    const wave = folder.addFolder('The travelling wave');
+    const wave = folder.addFolder('여행하는 파동');
     R(wave, c, 'waveIdle', 0, 2, 0.01, 'amplitude at rest');
     R(wave, c, 'waveRear', 0, 2, 0.01, '... while cocked');
     R(wave, c, 'waveStrike', 0, 2, 0.01, '... during the whip');
@@ -911,7 +911,7 @@ export class Editor {
     R(wave, c, 'waveFreq', 0.1, 5, 0.01, 'waves along the arm');
     R(wave, c, 'waveSpeed', -3, 3, 0.01, 'travel speed');
 
-    const beat = folder.addFolder('The beat');
+    const beat = folder.addFolder('박자');
     R(beat, c, 'riseTime', 0.05, 3, 0.01, 'rise out of the rift');
     R(beat, c, 'sweepTime', 0, 3, 0.01, 'sweep around the ring');
     R(beat, c, 'stagger', 0, 1, 0.005, 'random stagger');
@@ -925,7 +925,7 @@ export class Editor {
     R(beat, c, 'peelTime', 0.05, 2, 0.01, 'peel back off');
     R(beat, c, 'finaleLead', 0, 4, 0.01, 'finale, seconds before the end');
 
-    const flesh = folder.addFolder('The flesh');
+    const flesh = folder.addFolder('살');
     R(flesh, c, 'opacity', 0, 1, 0.01, 'opacity');
     R(flesh, c, 'mottle', 0, 1.5, 0.01, 'mottling');
     R(flesh, c, 'mottleScale', 0.2, 12, 0.05, 'blotches along the arm');
@@ -939,13 +939,13 @@ export class Editor {
     R(flesh, c, 'rimPower', 0.5, 8, 0.01, 'fresnel tightness');
     R(flesh, c, 'translucency', 0, 3, 0.01, 'light through the tip');
     R(flesh, c, 'glow', 0, 4, 0.01, 'glow');
-    flesh.addColor(c, 'colorSkin').name('skin');
-    flesh.addColor(c, 'colorSkinDeep').name('skin (dark)');
-    flesh.addColor(c, 'colorBelly').name('underside');
-    flesh.addColor(c, 'colorFlush').name('chromatophore flush');
-    flesh.addColor(c, 'colorRim').name('silhouette');
+    flesh.addColor(c, 'colorSkin').name('피부');
+    flesh.addColor(c, 'colorSkinDeep').name('피부 (어두운)');
+    flesh.addColor(c, 'colorBelly').name('아랫면');
+    flesh.addColor(c, 'colorFlush').name('색소포 홍조');
+    flesh.addColor(c, 'colorRim').name('실루엣');
 
-    const chroma = folder.addFolder('Chromatophores & biolume');
+    const chroma = folder.addFolder('색소포와 생물발광');
     R(chroma, c, 'chroma', 0, 2, 0.01, 'colour bands');
     R(chroma, c, 'chromaScale', 0.2, 10, 0.05, 'bands along the arm');
     R(chroma, c, 'chromaSpeed', -3, 3, 0.01, 'band travel speed');
@@ -956,9 +956,9 @@ export class Editor {
     R(chroma, c, 'biolumeSpeed', -4, 4, 0.01, 'vein crawl');
     R(chroma, c, 'biolumePulse', 0, 1, 0.01, 'breathing');
     R(chroma, c, 'strikeFlash', 0, 6, 0.05, 'flood on landing');
-    chroma.addColor(c, 'colorBiolume').name('biolume');
+    chroma.addColor(c, 'colorBiolume').name('생물발광');
 
-    const suckers = folder.addFolder('Suckers');
+    const suckers = folder.addFolder('흡반');
     R(suckers, c, 'suckers', 0, 2, 0.01, 'strength (0 hides them)');
     R(suckers, c, 'suckerDensity', 4, 90, 1, 'cups along the arm');
     R(suckers, c, 'suckerSize', 0.1, 1, 0.01, 'cup size');
@@ -967,9 +967,9 @@ export class Editor {
     R(suckers, c, 'suckerRelief', 0, 1.5, 0.01, 'cup depth');
     R(suckers, c, 'suckerGlow', 0, 4, 0.01, 'rim glow');
     R(suckers, c, 'suckerStart', 0, 0.5, 0.005, 'where the rows begin');
-    suckers.addColor(c, 'colorSucker').name('cup rims');
+    suckers.addColor(c, 'colorSucker').name('흡반 테두리');
 
-    const emerge = folder.addFolder('Coming out of the rift');
+    const emerge = folder.addFolder('균열에서 나오기');
     R(emerge, c, 'frontRough', 0, 1.5, 0.01, 'leading edge raggedness');
     R(emerge, c, 'frontWidth', 0.01, 0.8, 0.01, 'lit edge width');
     R(emerge, c, 'frontGlow', 0, 8, 0.05, 'edge glow');
@@ -977,7 +977,7 @@ export class Editor {
     R(emerge, c, 'breachInk', 0, 40, 1, 'ink on breach');
     R(emerge, c, 'breachDebris', 0, 40, 1, 'stone on breach');
 
-    const smash = folder.addFolder('The smash');
+    const smash = folder.addFolder('내리치기');
     R(smash, c, 'smashShock', 0, 3, 0.01, 'shock ring, × footprint');
     R(smash, c, 'smashDust', 0, 3, 0.01, 'dust ring, × footprint');
     R(smash, c, 'smashDebris', 0, 200, 1, 'stone thrown');
@@ -990,7 +990,7 @@ export class Editor {
     R(smash, c, 'finaleFlash', 0, 2, 0.01, 'finale screen flash');
     R(smash, c, 'finaleShock', 0, 30, 0.1, 'finale ring, metres');
 
-    const field = folder.addFolder('The rift');
+    const field = folder.addFolder('균열');
     R(field, c, 'fieldBoundary', 0.02, 2, 0.01, 'band thickness');
     R(field, c, 'fieldBoundaryGlow', 0, 8, 0.05, 'band glow');
     R(field, c, 'fieldFill', 0, 2, 0.01, 'interior fill');
@@ -1018,10 +1018,10 @@ export class Editor {
     R(field, c, 'fieldPulseSpeed', 0, 10, 0.05, 'pulse speed');
     R(field, c, 'fieldOpacity', 0, 2, 0.01, 'opacity');
     R(field, c, 'fieldHeight', 0.005, 0.4, 0.005, 'hover height');
-    field.addColor(c, 'colorField').name('water & spiral');
-    field.addColor(c, 'colorFieldEdge').name('band & throat');
+    field.addColor(c, 'colorField').name('물과 나선');
+    field.addColor(c, 'colorFieldEdge').name('테두리와 목');
 
-    const veil = folder.addFolder('The curtain of spray');
+    const veil = folder.addFolder('물보라의 장막');
     R(veil, c, 'veil', 0, 2, 0.01, 'opacity (0 hides it)');
     R(veil, c, 'veilHeight', 0.1, 8, 0.05, 'height');
     R(veil, c, 'veilRadius', 0.5, 1.6, 0.005, 'seat, × footprint');
@@ -1036,11 +1036,11 @@ export class Editor {
     R(veil, c, 'veilSpin', -1, 1, 0.005, 'rotation');
     R(veil, c, 'veilSoftFade', 0.02, 4, 0.01, 'soft intersection');
     R(veil, c, 'veilGlint', 0, 4, 0.01, 'droplet glints');
-    veil.addColor(c, 'colorVeil').name('body');
-    veil.addColor(c, 'colorVeilFoam').name('foam (where it tears)');
-    veil.addColor(c, 'colorVeilInk').name('ink (at the floor)');
+    veil.addColor(c, 'colorVeil').name('몸체');
+    veil.addColor(c, 'colorVeilFoam').name('물거품 (찢어지는 곳)');
+    veil.addColor(c, 'colorVeilInk').name('먹 (바닥 부근)');
 
-    const ground = folder.addFolder('Wet stone & fractures');
+    const ground = folder.addFolder('젖은 돌과 균열');
     R(ground, c, 'trailSlickRate', 0.05, 10, 0.05, 'trail slick / metre');
     R(ground, c, 'trailSlickRadius', 0.05, 6, 0.05, 'trail slick radius');
     R(ground, c, 'slickSpread', 0.2, 4, 0.05, 'drowned sheet, × footprint');
@@ -1050,16 +1050,16 @@ export class Editor {
     R(ground, c, 'slickRadius', 0.05, 6, 0.05, 'rim slick radius');
     R(ground, c, 'rippleRate', 0, 12, 0.1, 'swell rings / sec');
     R(ground, c, 'tearShock', 0.5, 25, 0.1, 'tear shockwave radius');
-    ground.addColor(c, 'colorSlick').name('wet stone');
-    ground.addColor(c, 'colorFoam').name('foam');
-    ground.addColor(c, 'colorDrowned').name('drowned sheet');
-    ground.addColor(c, 'colorShockA').name('shockwave ring');
-    ground.addColor(c, 'colorShockB').name('shockwave crest');
-    ground.addColor(c, 'colorRippleA').name('swell ring');
-    ground.addColor(c, 'colorRippleB').name('swell crest');
-    ground.addColor(c, 'colorDust').name('dust');
+    ground.addColor(c, 'colorSlick').name('젖은 돌');
+    ground.addColor(c, 'colorFoam').name('물거품');
+    ground.addColor(c, 'colorDrowned').name('잠긴 장막');
+    ground.addColor(c, 'colorShockA').name('충격파 고리');
+    ground.addColor(c, 'colorShockB').name('충격파 마루');
+    ground.addColor(c, 'colorRippleA').name('파도 고리');
+    ground.addColor(c, 'colorRippleB').name('파도 마루');
+    ground.addColor(c, 'colorDust').name('먼지');
 
-    const water = folder.addFolder('Ink, spray & marine snow');
+    const water = folder.addFolder('먹, 물보라, 바다눈');
     R(water, c, 'inkRate', 0, 900, 1, 'ink rate');
     R(water, c, 'inkSize', 0.05, 4, 0.01, 'ink size');
     R(water, c, 'inkSpeed', 0, 10, 0.05, 'ink speed');
@@ -1089,14 +1089,14 @@ export class Editor {
     Editor.gradient(water, c, 'colorSpray', 'Spray colour');
     Editor.gradient(water, c, 'colorMote', 'Marine snow colour');
 
-    const chips = folder.addFolder('Broken floor');
+    const chips = folder.addFolder('부서진 바닥');
     R(chips, c, 'debrisSize', 0.005, 0.5, 0.005, 'chip size');
     R(chips, c, 'debrisSpeed', 0, 30, 0.1, 'chip speed');
     R(chips, c, 'debrisLifetime', 0.1, 6, 0.05, 'chip lifetime');
     R(chips, c, 'debrisGravity', -50, 0, 0.1, 'chip gravity');
     Editor.gradient(chips, c, 'colorDebris', 'Chip colour');
 
-    const impact = folder.addFolder('The tear & the standing crown');
+    const impact = folder.addFolder('찢어짐과 서 있는 왕관');
     R(impact, c, 'tearSpray', 0, 600, 1, 'tear spray');
     R(impact, c, 'tearInk', 0, 400, 1, 'tear ink');
     R(impact, c, 'tearDebris', 0, 400, 1, 'tear stone');
@@ -1105,13 +1105,13 @@ export class Editor {
     R(impact, c, 'tearFlash', 0, 2, 0.01, 'tear screen flash');
     R(impact, c, 'holdShake', 0, 0.5, 0.005, 'standing rumble');
     R(impact, c, 'rumble', 0, 0.5, 0.005, 'travel rumble');
-    impact.addColor(c, 'colorFlash').name('tear flash colour');
+    impact.addColor(c, 'colorFlash').name('찢김 섬광 색상');
 
-    const light = folder.addFolder('Dynamic light');
+    const light = folder.addFolder('동적 광원');
     R(light, c, 'lightIntensity', 0, 120, 0.5, 'light intensity');
     R(light, c, 'lightRadius', 0.5, 50, 0.1, 'light radius');
     R(light, c, 'lightHeight', 0, 6, 0.05, 'height above the floor');
-    light.addColor(c, 'lightColor').name('light colour');
+    light.addColor(c, 'lightColor').name('광원 색상');
 
     this.krakenFolder = folder;
   }
@@ -1141,11 +1141,11 @@ export class Editor {
    * rate.
    */
   _buildElectrical() {
-    const folder = this.gui.addFolder('🔮  Electrical Sphere');
+    const folder = this.gui.addFolder('🔮  전기 구체');
     const c = settings.electrical;
     const R = Editor.range;
 
-    const cast = folder.addFolder('The cast');
+    const cast = folder.addFolder('시전');
     R(cast, c, 'range', 2, 60, 0.1, 'max range');
     R(cast, c, 'minRange', 0, 10, 0.1, 'min range');
     R(cast, c, 'zoneRadius', 1.5, 12, 0.1, 'platform radius');
@@ -1157,12 +1157,12 @@ export class Editor {
     R(cast, c, 'cooldown', 0, 8, 0.05, 'cooldown');
     Editor.castAnimation(cast, c);
 
-    const anchor = folder.addFolder('Where it leaves the hand');
+    const anchor = folder.addFolder('손에서 나가는 곳');
     R(anchor, c, 'handHeight', 0, 3, 0.01, 'hand height');
     R(anchor, c, 'handForward', -1, 3, 0.01, 'hand forward');
     R(anchor, c, 'handSide', -1.5, 1.5, 0.01, 'hand lateral');
 
-    const sphere = folder.addFolder('The sphere');
+    const sphere = folder.addFolder('구체');
     R(sphere, c, 'sphereRadius', 0.3, 5, 0.05, 'radius');
     R(sphere, c, 'hoverHeight', 0.4, 5, 0.05, 'hover height');
     R(sphere, c, 'hoverAmplitude', 0, 0.3, 0.005, 'hover amplitude');
@@ -1174,7 +1174,7 @@ export class Editor {
     // The folder that decides whether the ball reads as chrome or as smoke.
     // `reflectivity` is the head-on mirror, `fresnelPower` how fast it climbs
     // to a full mirror at the silhouette, `specular` the hard key glint.
-    const shell = folder.addFolder('Reflective shell');
+    const shell = folder.addFolder('반사 껍질');
     R(shell, c, 'envIntensity', 0, 4, 0.01, 'room brightness');
     R(shell, c, 'envRoughness', 0, 1, 0.005, 'reflection blur');
     R(shell, c, 'reflectivity', 0, 1, 0.01, 'head-on mirror');
@@ -1183,17 +1183,17 @@ export class Editor {
     R(shell, c, 'specSharp', 8, 600, 1, 'glint tightness');
     R(shell, c, 'shellDiffuse', 0, 2, 0.01, 'skin lighting');
     R(shell, c, 'shellRipple', 0.2, 12, 0.05, 'ripple scale');
-    shell.addColor(c, 'colorShell').name('lit skin');
-    shell.addColor(c, 'colorDeep').name('unlit skin');
+    shell.addColor(c, 'colorShell').name('밝은 피부');
+    shell.addColor(c, 'colorDeep').name('어두운 피부');
 
-    const plasma = folder.addFolder('Charge under the skin');
+    const plasma = folder.addFolder('표면 아래 전하');
     R(plasma, c, 'plasmaScale', 0.5, 12, 0.05, 'charge scale');
     R(plasma, c, 'plasmaSpeed', 0, 4, 0.01, 'charge speed');
     R(plasma, c, 'plasmaIntensity', 0, 4, 0.01, 'charge brightness');
     R(plasma, c, 'plasmaCore', 0.2, 6, 0.05, 'core concentration');
     R(plasma, c, 'plasmaWarp', 0, 2, 0.01, 'domain warp');
 
-    const hex = folder.addFolder('Hex panelling (off by default)');
+    const hex = folder.addFolder('육각 패널 (기본 꺼짐)');
     R(hex, c, 'hexScale', 0.5, 20, 0.1, 'panels / radius');
     R(hex, c, 'hexWidth', 0.02, 0.6, 0.005, 'panel edge width');
     R(hex, c, 'hexIntensity', 0, 3, 0.01, 'panel brightness');
@@ -1202,7 +1202,7 @@ export class Editor {
     // The flat electricity on the black skin. `filament width` is the one to
     // pull first: past about 0.15 the hairlines fatten into a rash and the
     // ball stops reading as dark.
-    const arcs = folder.addFolder('Surface discharge');
+    const arcs = folder.addFolder('표면 방전');
     R(arcs, c, 'surfaceArcScale', 0.5, 16, 0.1, 'filaments / radius');
     R(arcs, c, 'surfaceArcSpeed', 0, 4, 0.01, 'net evolution');
     R(arcs, c, 'surfaceArcCrawl', -4, 4, 0.05, 'net crawl');
@@ -1213,18 +1213,18 @@ export class Editor {
     R(arcs, c, 'surfaceArcRestrike', 0.5, 30, 0.5, 'restrikes / sec');
     R(arcs, c, 'surfaceArcWarp', 0, 2, 0.01, 'fork / buckle');
     R(arcs, c, 'surfaceArcCharge', 0, 1, 0.01, 'live-patch mask');
-    arcs.addColor(c, 'colorSurfaceArcCore').name('filament core');
-    arcs.addColor(c, 'colorSurfaceArcGlow').name('filament glow');
+    arcs.addColor(c, 'colorSurfaceArcCore').name('필라멘트 코어');
+    arcs.addColor(c, 'colorSurfaceArcGlow').name('필라멘트 발광');
 
     // With the corona shell gone this is the whole silhouette read.
-    const rim = folder.addFolder('Fresnel light');
+    const rim = folder.addFolder('프레넬 광');
     R(rim, c, 'fresnelGlow', 0, 6, 0.01, 'halo brightness');
     R(rim, c, 'fresnelGlowPower', 0.5, 10, 0.05, 'halo falloff');
     R(rim, c, 'rimPower', 0.5, 8, 0.05, 'rim sharpness');
     R(rim, c, 'rimIntensity', 0, 6, 0.01, 'rim brightness');
     R(rim, c, 'rimWidth', 0.1, 1.5, 0.01, 'rim band width');
 
-    const platform = folder.addFolder('Ground platform');
+    const platform = folder.addFolder('바닥 플랫폼');
     R(platform, c, 'platformRadius', 1.5, 16, 0.1, 'platform radius');
     R(platform, c, 'platformRings', 0, 16, 1, 'concentric rings');
     R(platform, c, 'platformRingWidth', 0.01, 0.5, 0.005, 'ring width');
@@ -1236,7 +1236,7 @@ export class Editor {
     R(platform, c, 'platformOpacity', 0, 2, 0.01, 'platform opacity');
     R(platform, c, 'platformGlow', 0, 4, 0.01, 'platform glow');
 
-    const corona = folder.addFolder('Radial corona');
+    const corona = folder.addFolder('방사형 코로나');
     R(corona, c, 'arcCount', 0, 80, 1, 'strands');
     R(corona, c, 'arcLength', 0.4, 8, 0.05, 'arc length');
     R(corona, c, 'arcVariance', 0, 1, 0.01, 'length variance');
@@ -1246,7 +1246,7 @@ export class Editor {
     R(corona, c, 'arcUpBias', -0.5, 1, 0.01, 'vertical bias');
     R(corona, c, 'arcBranchFraction', 0, 0.9, 0.01, 'short arc share');
 
-    const arcShape = folder.addFolder('Corona: per-arc shape');
+    const arcShape = folder.addFolder('코로나: 개별 아크 모양');
     R(arcShape, c, 'arcJitterAmp', 0, 1, 0.01, 'kink amplitude');
     R(arcShape, c, 'arcJitterFreq', 0.2, 16, 0.1, 'kinks / metre');
     R(arcShape, c, 'arcOctaves', 1, 5, 1, 'octaves');
@@ -1255,7 +1255,7 @@ export class Editor {
     R(arcShape, c, 'arcPinch', 0.01, 0.5, 0.005, 'end pinch');
     R(arcShape, c, 'arcBow', 0, 1, 0.01, 'mid-span bow');
 
-    const arcRibbon = folder.addFolder('Corona: the ribbon');
+    const arcRibbon = folder.addFolder('코로나: 리본');
     R(arcRibbon, c, 'arcWidth', 0.005, 0.6, 0.005, 'width at the surface');
     R(arcRibbon, c, 'arcWidthTip', 0.0, 2, 0.01, 'width at tip');
     R(arcRibbon, c, 'arcCoreWidth', 0.5, 5, 0.05, 'spine multiplier');
@@ -1272,41 +1272,41 @@ export class Editor {
     R(arcRibbon, c, 'arcRate', 0.5, 60, 0.5, 'cycles / sec');
     R(arcRibbon, c, 'arcLife', 0.05, 1, 0.01, 'lit fraction of cycle');
 
-    const pulse = folder.addFolder('The pulse');
+    const pulse = folder.addFolder('맥동');
     R(pulse, c, 'pulseFrequency', 0.1, 8, 0.05, 'pulses / sec');
     R(pulse, c, 'pulseStrength', 0, 1, 0.01, 'pulse strength');
     R(pulse, c, 'pulseParticleBoost', 1, 4, 0.05, 'particle boost');
 
-    const sphereColor = folder.addFolder('Sphere colours');
-    sphereColor.addColor(c, 'colorCore').name('glint tint');
-    sphereColor.addColor(c, 'colorInner').name('limb lift');
-    sphereColor.addColor(c, 'colorMid').name('charge under skin');
-    sphereColor.addColor(c, 'colorOuter').name('Fresnel halo');
-    sphereColor.addColor(c, 'colorEdge').name('Fresnel rim');
-    sphereColor.addColor(c, 'colorHex').name('hex panels');
-    sphereColor.addColor(c, 'colorPulse').name('pulse flash');
+    const sphereColor = folder.addFolder('구체 색상');
+    sphereColor.addColor(c, 'colorCore').name('반사광 색조');
+    sphereColor.addColor(c, 'colorInner').name('팔다리 들어올림');
+    sphereColor.addColor(c, 'colorMid').name('표면 아래 전하');
+    sphereColor.addColor(c, 'colorOuter').name('프레넬 후광');
+    sphereColor.addColor(c, 'colorEdge').name('프레넬 림');
+    sphereColor.addColor(c, 'colorHex').name('육각 패널');
+    sphereColor.addColor(c, 'colorPulse').name('맥동 섬광');
 
-    const arcColor = folder.addFolder('Corona colours');
-    arcColor.addColor(c, 'colorArcCore').name('hot core');
-    arcColor.addColor(c, 'colorArcInner').name('inner');
-    arcColor.addColor(c, 'colorArcOuter').name('outer');
-    arcColor.addColor(c, 'colorArcHalo').name('halo');
+    const arcColor = folder.addFolder('코로나 색상');
+    arcColor.addColor(c, 'colorArcCore').name('뜨거운 코어');
+    arcColor.addColor(c, 'colorArcInner').name('안쪽');
+    arcColor.addColor(c, 'colorArcOuter').name('바깥쪽');
+    arcColor.addColor(c, 'colorArcHalo').name('후광');
 
-    const platformColor = folder.addFolder('Platform colours');
-    platformColor.addColor(c, 'colorPlatformRing').name('rings');
-    platformColor.addColor(c, 'colorPlatformInner').name('inner band');
-    platformColor.addColor(c, 'colorPlatformHex').name('hex grain');
-    platformColor.addColor(c, 'colorPlatformDeep').name('dark fill');
+    const platformColor = folder.addFolder('플랫폼 색상');
+    platformColor.addColor(c, 'colorPlatformRing').name('고리');
+    platformColor.addColor(c, 'colorPlatformInner').name('안쪽 띠');
+    platformColor.addColor(c, 'colorPlatformHex').name('육각 결');
+    platformColor.addColor(c, 'colorPlatformDeep').name('어두운 채움');
 
-    const ground = folder.addFolder('Ground burns');
+    const ground = folder.addFolder('바닥 화상');
     R(ground, c, 'platformScorchRate', 0.05, 8, 0.05, 'burns / metre');
     R(ground, c, 'platformScorchRadius', 0.05, 4, 0.05, 'burn radius');
     R(ground, c, 'platformScorchLife', 0.5, 20, 0.1, 'burn lifetime');
     R(ground, c, 'platformScorchIntensity', 0, 2, 0.01, 'burn intensity');
-    ground.addColor(c, 'colorScorch').name('scorch');
-    ground.addColor(c, 'colorEmber').name('ember');
+    ground.addColor(c, 'colorScorch').name('그을음');
+    ground.addColor(c, 'colorEmber').name('숯');
 
-    const sparks = folder.addFolder('Sparks & motes');
+    const sparks = folder.addFolder('불꽃과 부유 입자');
     R(sparks, c, 'sparkRate', 0, 1500, 1, 'front spark rate');
     R(sparks, c, 'sparkSize', 0.005, 0.8, 0.005, 'spark size');
     R(sparks, c, 'sparkSpeed', 0, 40, 0.1, 'spark speed');
@@ -1332,7 +1332,7 @@ export class Editor {
     R(sparks, c, 'emberStretch', 0, 3, 0.01, 'ember stretch');
     Editor.gradient(sparks, c, 'colorEmber', 'Ember colour');
 
-    const fieldFx = folder.addFolder('Sphere-shed particles');
+    const fieldFx = folder.addFolder('구체가 뿌리는 파티클');
     R(fieldFx, c, 'fieldSparkRate', 0, 1500, 1, 'surface spark rate');
     R(fieldFx, c, 'fieldSparkSpeed', 0, 20, 0.1, 'surface spark speed');
     R(fieldFx, c, 'fieldSparkLifetime', 0.05, 4, 0.01, 'surface spark life');
@@ -1352,14 +1352,14 @@ export class Editor {
     R(fieldFx, c, 'smokeRise', -2, 4, 0.01, 'smoke rise');
     Editor.gradient(fieldFx, c, 'colorSmoke', 'Smoke colour');
 
-    const impact = folder.addFolder('Muzzle & impact');
+    const impact = folder.addFolder('발사 지점과 충격');
     R(impact, c, 'muzzleSize', 0.05, 6, 0.05, 'muzzle size');
     R(impact, c, 'muzzleIntensity', 0, 5, 0.01, 'muzzle intensity');
-    impact.addColor(c, 'colorMuzzleA').name('muzzle shell');
-    impact.addColor(c, 'colorMuzzleB').name('muzzle body');
-    impact.addColor(c, 'colorMuzzleC').name('muzzle arcs');
+    impact.addColor(c, 'colorMuzzleA').name('발사 껍질');
+    impact.addColor(c, 'colorMuzzleB').name('발사 몸체');
+    impact.addColor(c, 'colorMuzzleC').name('발사 아크');
     R(impact, c, 'castFlash', 0, 2, 0.01, 'flash on release');
-    impact.addColor(c, 'colorCastFlash').name('release flash colour');
+    impact.addColor(c, 'colorCastFlash').name('해제 섬광 색상');
     R(impact, c, 'burstSparks', 0, 600, 1, 'burst sparks');
     R(impact, c, 'burstEmbers', 0, 300, 1, 'burst embers');
     R(impact, c, 'impactShake', 0, 3, 0.01, 'shake');
@@ -1368,16 +1368,16 @@ export class Editor {
     R(impact, c, 'rumble', 0, 0.5, 0.005, 'travel rumble');
     R(impact, c, 'holdShake', 0, 0.5, 0.005, 'hold rumble');
     R(impact, c, 'shockRadius', 0.5, 25, 0.1, 'shockwave radius');
-    impact.addColor(c, 'colorShockA').name('shockwave ring');
-    impact.addColor(c, 'colorShockB').name('shockwave crest');
-    impact.addColor(c, 'colorFlash').name('screen flash colour');
+    impact.addColor(c, 'colorShockA').name('충격파 고리');
+    impact.addColor(c, 'colorShockB').name('충격파 마루');
+    impact.addColor(c, 'colorFlash').name('화면 섬광 색상');
 
-    const light = folder.addFolder('Dynamic light');
+    const light = folder.addFolder('동적 광원');
     R(light, c, 'lightIntensity', 0, 120, 0.5, 'light intensity');
     R(light, c, 'lightRadius', 0.5, 50, 0.1, 'light radius');
     R(light, c, 'lightFlicker', 0, 1, 0.01, 'light gutter');
     R(light, c, 'lightFlickerSpeed', 1, 90, 1, 'gutter rate');
-    light.addColor(c, 'lightColor').name('light colour');
+    light.addColor(c, 'lightColor').name('광원 색상');
 
     this.electricalFolder = folder;
   }
@@ -1394,25 +1394,25 @@ export class Editor {
    * crust, the boulder ring, the impact tower or the dust trail.
    */
   _buildEarth() {
-    const folder = this.gui.addFolder('⛰  Earthen Spire');
+    const folder = this.gui.addFolder('⛰  대지의 첨탑');
     const c = settings.earth;
     const R = Editor.range;
 
-    const cast = folder.addFolder('The cast');
+    const cast = folder.addFolder('시전');
     R(cast, c, 'range', 2, 60, 0.1, 'max range');
     R(cast, c, 'minRange', 0, 10, 0.1, 'min range');
     R(cast, c, 'speed', 5, 120, 1, 'front speed');
     R(cast, c, 'cooldown', 0, 8, 0.05, 'cooldown');
     Editor.castAnimation(cast, c);
 
-    const hand = folder.addFolder('Where the wave leaves the caster');
+    const hand = folder.addFolder('파동이 시전자에게서 나가는 곳');
     R(hand, c, 'handHeight', 0, 3, 0.01, 'hand height');
     R(hand, c, 'handForward', -1, 3, 0.01, 'hand forward');
     R(hand, c, 'handSide', -1.5, 1.5, 0.01, 'hand lateral');
     R(hand, c, 'castFlash', 0, 2, 0.01, 'flash on release');
-    hand.addColor(c, 'colorCastFlash').name('release flash colour');
+    hand.addColor(c, 'colorCastFlash').name('해제 섬광 색상');
 
-    const wave = folder.addFolder('The travelling wave');
+    const wave = folder.addFolder('여행하는 파동');
     R(wave, c, 'startOffset', 0, 6, 0.05, 'start offset');
     R(wave, c, 'crustWidth', 0.4, 8, 0.05, 'crust width');
     R(wave, c, 'crustDensity', 0.2, 4, 0.01, 'plate density');
@@ -1420,7 +1420,7 @@ export class Editor {
     R(wave, c, 'crackDelay', 0, 1.5, 0.01, 'fracture delay');
     R(wave, c, 'crackSharpness', 0.02, 1.0, 0.01, 'fracture snap');
 
-    const plates = folder.addFolder('The plates');
+    const plates = folder.addFolder('판');
     R(plates, c, 'plateSize', 0.1, 2, 0.01, 'plate radius');
     R(plates, c, 'plateThickness', 0.02, 0.8, 0.005, 'plate thickness');
     R(plates, c, 'plateTilt', 0, 2.5, 0.01, 'max tilt');
@@ -1428,7 +1428,7 @@ export class Editor {
     R(plates, c, 'plateSpread', 0, 1.5, 0.01, 'slide apart');
     R(plates, c, 'crackDepth', 0, 2, 0.01, 'drop into crack');
 
-    const boulders = folder.addFolder('Travelling boulders');
+    const boulders = folder.addFolder('여행하는 바위');
     R(boulders, c, 'rockCount', 1, 60, 1, 'count');
     R(boulders, c, 'rockSpacing', 0.4, 6, 0.05, 'spacing');
     R(boulders, c, 'rockSize', 0.1, 1.6, 0.01, 'base size');
@@ -1439,7 +1439,7 @@ export class Editor {
     R(boulders, c, 'lifetime', 0.2, 8, 0.05, 'stand time');
     R(boulders, c, 'sinkDelay', 0, 2, 0.01, 'sink delay');
 
-    const tower = folder.addFolder('The tower');
+    const tower = folder.addFolder('탑');
     R(tower, c, 'towerRiseTime', 0.1, 3, 0.01, 'rise time');
     R(tower, c, 'towerHold', 0, 6, 0.05, 'hold time');
     R(tower, c, 'towerWidth', 0.4, 4, 0.05, 'base half-width');
@@ -1448,26 +1448,26 @@ export class Editor {
     R(tower, c, 'towerRocks', 4, 60, 1, 'boulder ring count');
     R(tower, c, 'groundDisplacement', 0.2, 3, 0.01, 'ring rock lift');
 
-    const look = folder.addFolder('The rock');
+    const look = folder.addFolder('바위');
     R(look, c, 'glow', 0, 4, 0.01, 'hot-seam glow');
-    look.addColor(c, 'colorRock').name('rock body');
-    look.addColor(c, 'colorRockDark').name('rock shadow');
-    look.addColor(c, 'colorMoss').name('moss');
+    look.addColor(c, 'colorRock').name('바위 몸체');
+    look.addColor(c, 'colorRockDark').name('바위 그림자');
+    look.addColor(c, 'colorMoss').name('이끼');
 
-    const glass = folder.addFolder('Tower glass body');
-    glass.addColor(c, 'glassColor').name('tint');
+    const glass = folder.addFolder('탑 유리 몸체');
+    glass.addColor(c, 'glassColor').name('색조');
     R(glass, c, 'glassTransmission', 0, 1, 0.01, 'transmission (0 = opaque)');
     R(glass, c, 'glassRoughness', 0, 1, 0.005, 'roughness');
     R(glass, c, 'glassIor', 1, 2.5, 0.005, 'index of refraction');
     R(glass, c, 'glassThickness', 0, 2, 0.01, 'refraction depth (m)');
-    glass.addColor(c, 'glassAttenuationColor').name('refraction tint');
+    glass.addColor(c, 'glassAttenuationColor').name('굴절 색조');
     R(glass, c, 'glassAttenuationDistance', 0.05, 4, 0.01, 'refraction tint depth (m)');
     R(glass, c, 'glassOpacity', 0, 1, 0.01, 'opacity (on top of transmission)');
-    glass.addColor(c, 'glassEmissive').name('emissive');
+    glass.addColor(c, 'glassEmissive').name('발광');
     R(glass, c, 'glassEmissiveStrength', 0, 3, 0.01, 'emissive gain');
 
-    const outline = folder.addFolder('Outline glow');
-    outline.addColor(c, 'outlineColor').name('rim colour');
+    const outline = folder.addFolder('윤곽 발광');
+    outline.addColor(c, 'outlineColor').name('림 색상');
     R(outline, c, 'outlineThickness', 0, 0.4, 0.005, 'shell offset (m)');
     R(outline, c, 'outlineStrength', 0, 5, 0.01, 'master gain');
     R(outline, c, 'outlinePulseSpeed', 0, 10, 0.05, 'pulse rate (Hz)');
@@ -1476,7 +1476,7 @@ export class Editor {
     R(outline, c, 'outlinePulseSettle', 0, 3, 0.01, 'standing baseline');
     R(outline, c, 'outlinePulseRampDown', 0.05, 6, 0.05, 'spike decay rate (/s)');
 
-    const fx = folder.addFolder('Dust & debris');
+    const fx = folder.addFolder('먼지와 파편');
     R(fx, c, 'dustAmount', 0, 3, 0.01, 'dust amount');
     R(fx, c, 'dustSize', 0.2, 6, 0.05, 'dust size');
     R(fx, c, 'dustLifetime', 0.4, 6, 0.05, 'dust life');
@@ -1485,12 +1485,12 @@ export class Editor {
     R(fx, c, 'debrisLifetime', 0.2, 4, 0.05, 'debris life');
     R(fx, c, 'pebbleRate', 0, 80, 1, 'pebble rate');
 
-    const impact = folder.addFolder('The impact');
+    const impact = folder.addFolder('충격');
     R(impact, c, 'explosionFlash', 0, 1.5, 0.01, 'screen flash');
     R(impact, c, 'impactShake', 0, 3, 0.01, 'shake amount');
     R(impact, c, 'shakeDuration', 0.1, 4, 0.05, 'shake duration');
     R(impact, c, 'shakeIntensity', 0, 3, 0.01, 'global shake scale');
-    impact.addColor(c, 'colorFlash').name('flash colour');
+    impact.addColor(c, 'colorFlash').name('섬광 색상');
 
     this.earthFolder = folder;
   }
@@ -1514,30 +1514,30 @@ export class Editor {
    * surface reads as a funnel or as a spinning disc).
    */
   _buildPortal() {
-    const folder = this.gui.addFolder('⛩  Verdant Gate');
+    const folder = this.gui.addFolder('⛩  녹색 관문');
     const c = settings.portal;
     const R = Editor.range;
 
-    const cast = folder.addFolder('The cast');
+    const cast = folder.addFolder('시전');
     R(cast, c, 'range', 2, 60, 0.1, 'max range');
     R(cast, c, 'minRange', 0, 12, 0.1, 'min range');
     R(cast, c, 'speed', 5, 120, 1, 'seam speed');
     R(cast, c, 'cooldown', 0, 12, 0.05, 'cooldown');
     Editor.castAnimation(cast, c);
 
-    const hand = folder.addFolder('Where the seam leaves the caster');
+    const hand = folder.addFolder('용접선이 시전자에게서 나가는 곳');
     R(hand, c, 'handHeight', 0, 3, 0.01, 'hand height');
     R(hand, c, 'handForward', -1, 3, 0.01, 'hand forward');
     R(hand, c, 'handSide', -1.5, 1.5, 0.01, 'hand lateral');
     R(hand, c, 'castFlash', 0, 2, 0.01, 'flash on release');
-    hand.addColor(c, 'colorCastFlash').name('release flash colour');
+    hand.addColor(c, 'colorCastFlash').name('해제 섬광 색상');
 
-    const opening = folder.addFolder('The opening (metres)');
+    const opening = folder.addFolder('입구 (미터)');
     R(opening, c, 'gateWidth', 1, 10, 0.05, 'clear span');
     R(opening, c, 'gateHeight', 0.6, 8, 0.05, 'springing line');
     R(opening, c, 'gateDepth', 0.2, 3, 0.05, 'wall thickness');
 
-    const stones = folder.addFolder('The stones');
+    const stones = folder.addFolder('돌');
     R(stones, c, 'stoneSize', 0.15, 2, 0.01, 'block size');
     R(stones, c, 'stoneStep', 0.15, 2, 0.01, 'spacing along the arch');
     R(stones, c, 'stoneCourses', 1, 4, 1, 'courses');
@@ -1545,7 +1545,7 @@ export class Editor {
     R(stones, c, 'stoneTilt', 0, 1, 0.01, 'set-angle jitter');
     R(stones, c, 'stoneRandomness', 0, 2, 0.01, 'randomness');
 
-    const build = folder.addFolder('The construction');
+    const build = folder.addFolder('쌓기');
     R(build, c, 'buildTime', 0.1, 5, 0.05, 'first stone to keystone');
     R(build, c, 'stoneFly', 0.1, 2, 0.01, 'one stone flight');
     R(build, c, 'stoneStart', 0.2, 4, 0.05, 'starts below floor');
@@ -1554,7 +1554,7 @@ export class Editor {
     R(build, c, 'landShake', 0, 0.6, 0.005, 'shake per stone');
     R(build, c, 'keystoneShake', 0, 2, 0.01, 'keystone shake');
 
-    const surface = folder.addFolder('The portal');
+    const surface = folder.addFolder('관문');
     R(surface, c, 'openDelay', 0, 2, 0.01, 'delay after keystone');
     R(surface, c, 'openTime', 0.1, 4, 0.01, 'aperture flood time');
     R(surface, c, 'closeTime', 0.2, 5, 0.05, 'collapse time');
@@ -1580,16 +1580,16 @@ export class Editor {
     R(surface, c, 'overlap', 0, 1.5, 0.01, 'tucked under the stones (m)');
     R(surface, c, 'surfaceOpacity', 0, 1, 0.01, 'how solid it reads');
 
-    const colors = folder.addFolder('Colour');
-    colors.addColor(c, 'colorCore').name('vortex centre');
-    colors.addColor(c, 'colorMid').name('the gate itself');
-    colors.addColor(c, 'colorDeep').name('between the bands');
-    colors.addColor(c, 'colorRim').name('contour & halo');
-    colors.addColor(c, 'colorRock').name('stone body');
-    colors.addColor(c, 'colorRockDark').name('stone shadow');
-    colors.addColor(c, 'colorMoss').name('moss');
+    const colors = folder.addFolder('색상');
+    colors.addColor(c, 'colorCore').name('소용돌이 중심');
+    colors.addColor(c, 'colorMid').name('관문 자체');
+    colors.addColor(c, 'colorDeep').name('테두리 사이');
+    colors.addColor(c, 'colorRim').name('윤곽과 후광');
+    colors.addColor(c, 'colorRock').name('돌 몸체');
+    colors.addColor(c, 'colorRockDark').name('돌 그림자');
+    colors.addColor(c, 'colorMoss').name('이끼');
 
-    const fx = folder.addFolder('Motes, mist & dust');
+    const fx = folder.addFolder('부유 입자, 안개, 먼지');
     R(fx, c, 'moteRate', 0, 160, 1, 'motes / second');
     R(fx, c, 'moteSize', 0.01, 0.6, 0.005, 'mote size');
     R(fx, c, 'moteLife', 0.3, 8, 0.05, 'mote life');
@@ -1604,12 +1604,12 @@ export class Editor {
     R(fx, c, 'debrisVelocity', 0.5, 14, 0.1, 'chip speed');
     R(fx, c, 'debrisLifetime', 0.2, 4, 0.05, 'chip life');
 
-    const light = folder.addFolder('Light & impact');
+    const light = folder.addFolder('빛과 충격');
     R(light, c, 'lightIntensity', 0, 40, 0.1, 'light intensity');
     R(light, c, 'lightRadius', 1, 40, 0.5, 'light radius');
     R(light, c, 'lightHeight', 0, 5, 0.05, 'light height');
     R(light, c, 'lightFlicker', 0, 1, 0.01, 'flicker depth');
-    light.addColor(c, 'lightColor').name('light colour');
+    light.addColor(c, 'lightColor').name('광원 색상');
     R(light, c, 'explosionFlash', 0, 1.5, 0.01, 'screen flash on open');
     R(light, c, 'shakeIntensity', 0, 3, 0.01, 'shake scale');
 
@@ -1636,25 +1636,25 @@ export class Editor {
    * slider is most of the difference between a portal and a hole.
    */
   _buildAether() {
-    const folder = this.gui.addFolder('◎  Tidewrought Ring');
+    const folder = this.gui.addFolder('◎  격류의 고리');
     const c = settings.aether;
     const R = Editor.range;
 
-    const cast = folder.addFolder('The cast');
+    const cast = folder.addFolder('시전');
     R(cast, c, 'range', 2, 60, 0.1, 'max range');
     R(cast, c, 'minRange', 0, 12, 0.1, 'min range');
     R(cast, c, 'speed', 5, 120, 1, 'tide speed');
     R(cast, c, 'cooldown', 0, 12, 0.05, 'cooldown');
     Editor.castAnimation(cast, c);
 
-    const hand = folder.addFolder('Where the tide leaves the caster');
+    const hand = folder.addFolder('격류가 시전자에게서 나가는 곳');
     R(hand, c, 'handHeight', 0, 3, 0.01, 'hand height');
     R(hand, c, 'handForward', -1, 3, 0.01, 'hand forward');
     R(hand, c, 'handSide', -1.5, 1.5, 0.01, 'hand lateral');
     R(hand, c, 'castFlash', 0, 2, 0.01, 'flash on release');
-    hand.addColor(c, 'colorCastFlash').name('release flash colour');
+    hand.addColor(c, 'colorCastFlash').name('해제 섬광 색상');
 
-    const hoop = folder.addFolder('The ring (metres)');
+    const hoop = folder.addFolder('고리 (미터)');
     R(hoop, c, 'ringRadius', 0.6, 6, 0.05, 'clear radius');
     R(hoop, c, 'ringDepth', 0.2, 3, 0.05, 'hoop thickness');
     R(hoop, c, 'ringHover', 0, 2, 0.01, 'clears the floor by');
@@ -1662,7 +1662,7 @@ export class Editor {
     R(hoop, c, 'lobes', 0, 16, 1, 'lobes');
     R(hoop, c, 'lobeDepth', 0, 0.3, 0.005, 'lobe depth');
 
-    const segments = folder.addFolder('The segments');
+    const segments = folder.addFolder('분절');
     R(segments, c, 'segmentSize', 0.1, 2, 0.01, 'segment size');
     R(segments, c, 'segmentStep', 0.1, 2, 0.01, 'spacing along the ring');
     R(segments, c, 'courses', 1, 4, 1, 'courses');
@@ -1671,7 +1671,7 @@ export class Editor {
     R(segments, c, 'segmentTilt', 0, 1, 0.01, 'set-angle jitter');
     R(segments, c, 'segmentRandomness', 0, 2, 0.01, 'randomness');
 
-    const forge = folder.addFolder('The forging');
+    const forge = folder.addFolder('단조');
     R(forge, c, 'assembleTime', 0.1, 5, 0.05, 'first segment to crown');
     R(forge, c, 'segmentFly', 0.05, 2, 0.01, 'one segment swing');
     R(forge, c, 'swarmRadius', 1, 8, 0.05, 'comes from, x its radius');
@@ -1683,11 +1683,11 @@ export class Editor {
     R(forge, c, 'lockShake', 0, 0.6, 0.005, 'shake per segment');
     R(forge, c, 'crownShake', 0, 2, 0.01, 'crown shake');
 
-    const stand = folder.addFolder('Standing up');
+    const stand = folder.addFolder('일어서기');
     R(stand, c, 'riseDelay', 0, 2, 0.01, 'delay after the crown');
     R(stand, c, 'riseTime', 0.1, 4, 0.01, 'stand up over');
 
-    const rift = folder.addFolder('The rift');
+    const rift = folder.addFolder('균열');
     R(rift, c, 'openDelay', 0, 2, 0.01, 'delay after standing');
     R(rift, c, 'openTime', 0.05, 4, 0.01, 'surge time');
     R(rift, c, 'closeTime', 0.2, 5, 0.05, 'break-up time');
@@ -1714,7 +1714,7 @@ export class Editor {
     R(rift, c, 'overlap', 0, 1.5, 0.01, 'tucked under the stone (m)');
     R(rift, c, 'surfaceOpacity', 0, 1, 0.01, 'how solid it reads');
 
-    const runes = folder.addFolder('The runes');
+    const runes = folder.addFolder('룬 문자');
     R(runes, c, 'runes', 0, 3, 0.01, 'band strength');
     R(runes, c, 'runeCount', 1, 40, 1, 'marks per half');
     R(runes, c, 'runeRadius', 0, 1.5, 0.01, 'band offset (m)');
@@ -1722,19 +1722,19 @@ export class Editor {
     R(runes, c, 'runeGap', 0.02, 0.5, 0.01, 'mark duty');
     R(runes, c, 'runeGlow', 0, 4, 0.01, 'burned into the stone');
 
-    const apart = folder.addFolder('Coming apart');
+    const apart = folder.addFolder('분해');
     R(apart, c, 'scatterOut', 0, 10, 0.05, 'flung outward (m)');
     R(apart, c, 'scatterSpin', 0, 6, 0.05, 'and off the spindle (m)');
 
-    const colors = folder.addFolder('Colour');
-    colors.addColor(c, 'colorCore').name('lip at the stone');
-    colors.addColor(c, 'colorMid').name('the water');
-    colors.addColor(c, 'colorDeep').name('the deep & the eye');
-    colors.addColor(c, 'colorRim').name('rim, halo & runes');
-    colors.addColor(c, 'colorMetal').name('segment body');
-    colors.addColor(c, 'colorMetalDark').name('segment shadow');
+    const colors = folder.addFolder('색상');
+    colors.addColor(c, 'colorCore').name('돌의 입술');
+    colors.addColor(c, 'colorMid').name('물');
+    colors.addColor(c, 'colorDeep').name('깊이와 눈');
+    colors.addColor(c, 'colorRim').name('림, 후광, 룬 문자');
+    colors.addColor(c, 'colorMetal').name('분절 몸체');
+    colors.addColor(c, 'colorMetalDark').name('분절 그림자');
 
-    const fx = folder.addFolder('Motes, spray & mist');
+    const fx = folder.addFolder('부유 입자, 물보라, 안개');
     R(fx, c, 'moteRate', 0, 160, 1, 'motes / second');
     R(fx, c, 'moteSize', 0.01, 0.6, 0.005, 'mote size');
     R(fx, c, 'moteLife', 0.2, 8, 0.05, 'mote life');
@@ -1752,11 +1752,11 @@ export class Editor {
     R(fx, c, 'debrisVelocity', 0.5, 14, 0.1, 'chip speed');
     R(fx, c, 'debrisLifetime', 0.2, 4, 0.05, 'chip life');
 
-    const light = folder.addFolder('Light & impact');
+    const light = folder.addFolder('빛과 충격');
     R(light, c, 'lightIntensity', 0, 40, 0.1, 'light intensity');
     R(light, c, 'lightRadius', 1, 40, 0.5, 'light radius');
     R(light, c, 'lightFlicker', 0, 1, 0.01, 'swell depth');
-    light.addColor(c, 'lightColor').name('light colour');
+    light.addColor(c, 'lightColor').name('광원 색상');
     R(light, c, 'explosionFlash', 0, 1.5, 0.01, 'screen flash on open');
     R(light, c, 'shakeIntensity', 0, 3, 0.01, 'shake scale');
 
@@ -1786,24 +1786,24 @@ export class Editor {
    * ability.
    */
   _buildFirePortal() {
-    const folder = this.gui.addFolder('◌  Fire Portal');
+    const folder = this.gui.addFolder('◌  불꽃 차원의 문');
     const c = settings.firePortal;
     const R = Editor.range;
 
-    const cast = folder.addFolder('The cast');
+    const cast = folder.addFolder('시전');
     R(cast, c, 'range', 2, 60, 0.1, 'max range');
     R(cast, c, 'minRange', 0, 12, 0.1, 'min range');
     R(cast, c, 'speed', 5, 120, 1, 'cast speed');
     R(cast, c, 'cooldown', 0, 12, 0.05, 'cooldown');
     Editor.castAnimation(cast, c);
 
-    const circle = folder.addFolder('The circle (metres)');
+    const circle = folder.addFolder('원 (미터)');
     R(circle, c, 'ringRadius', 0.6, 6, 0.05, 'clear radius');
     R(circle, c, 'ringHover', 0, 3, 0.01, 'clears the floor by');
     R(circle, c, 'lean', -0.6, 0.6, 0.005, 'tips back by (rad)');
     R(circle, c, 'closeTime', 0.2, 5, 0.05, 'goes out over');
 
-    const draw = folder.addFolder('Struck — the spark that draws it');
+    const draw = folder.addFolder('점화 — 그리는 불꽃');
     R(draw, c, 'scribeTime', 0.1, 3, 0.01, 'runs round in');
     R(draw, c, 'scribeHead', 0, 8, 0.05, 'the spark itself');
     R(draw, c, 'scribeHeadSize', 0.03, 0.8, 0.005, 'how big it is (m)');
@@ -1820,21 +1820,21 @@ export class Editor {
     R(draw, c, 'apertureDelay', 0, 1, 0.01, 'hole waits for (of the draw)');
     R(draw, c, 'apertureTime', 0.05, 4, 0.01, 'hole irises over');
 
-    const ring = folder.addFolder('The ring');
+    const ring = folder.addFolder('고리');
     R(ring, c, 'ring', 0, 4, 0.01, 'bloom brightness');
     R(ring, c, 'ringWidth', 0.02, 2, 0.01, 'bloom outward (m)');
     R(ring, c, 'ringInner', 0.01, 0.6, 0.005, 'licks back over the hole (m)');
     R(ring, c, 'ringHot', 0, 6, 0.01, 'the white line itself');
-    ring.addColor(c, 'colorRing').name('bloom colour');
+    ring.addColor(c, 'colorRing').name('발광 색상');
     R(ring, c, 'surfaceOpacity', 0, 1, 0.01, 'how solid the hole reads');
 
-    const middle = folder.addFolder('The middle');
+    const middle = folder.addFolder('중앙');
     R(middle, c, 'voidDark', 0, 1, 0.01, 'how black it is');
     R(middle, c, 'voidWarm', 0, 2, 0.01, 'bounce inside the lip');
     R(middle, c, 'voidFeather', 0.02, 2, 0.01, 'feathers into the ring (m)');
-    middle.addColor(c, 'colorVoid').name('the middle');
+    middle.addColor(c, 'colorVoid').name('중앙');
 
-    const sparks = folder.addFolder('The sparks');
+    const sparks = folder.addFolder('불꽃');
     R(sparks, c, 'sparkRate', 0, 6000, 20, 'sparks / second');
     R(sparks, c, 'sparkSpeed', 0, 40, 0.1, 'spark speed (m/s)');
     R(sparks, c, 'sparkDrag', 0, 6, 0.01, 'drag — what curves them');
@@ -1852,17 +1852,17 @@ export class Editor {
     R(sparks, c, 'sparkSpeedVariance', 0, 1, 0.01, 'speed variance');
     R(sparks, c, 'sparkLifeVariance', 0, 1, 0.01, 'life variance');
 
-    const grade = folder.addFolder('Spark colour over its life');
-    grade.addColor(c, 'colorBirth').name('birth — white');
-    grade.addColor(c, 'colorEarly').name('early — orange');
-    grade.addColor(c, 'colorLate').name('late — red');
-    grade.addColor(c, 'colorDeath').name('death');
+    const grade = folder.addFolder('수명에 따른 불꽃 색상');
+    grade.addColor(c, 'colorBirth').name('탄생 — 백색');
+    grade.addColor(c, 'colorEarly').name('초반 — 주황');
+    grade.addColor(c, 'colorLate').name('후반 — 빨강');
+    grade.addColor(c, 'colorDeath').name('소멸');
 
-    const light = folder.addFolder('Light');
+    const light = folder.addFolder('빛');
     R(light, c, 'lightIntensity', 0, 40, 0.1, 'light intensity');
     R(light, c, 'lightRadius', 1, 40, 0.5, 'light radius');
     R(light, c, 'lightFlicker', 0, 1, 0.01, 'gutter depth');
-    light.addColor(c, 'lightColor').name('light colour');
+    light.addColor(c, 'lightColor').name('광원 색상');
 
     this.firePortalFolder = folder;
   }
@@ -1875,21 +1875,21 @@ export class Editor {
    * targeting, this spends on the body it is worn by.
    */
   _buildBoost() {
-    const folder = this.gui.addFolder('⚡  Electric Boost');
+    const folder = this.gui.addFolder('⚡  전기 강화');
     const c = settings.boost;
     const R = Editor.range;
 
-    const buff = folder.addFolder('The buff');
+    const buff = folder.addFolder('강화');
     R(buff, c, 'duration', 1, 60, 0.1, 'duration');
     R(buff, c, 'rampIn', 0.05, 3, 0.01, 'ramp in');
     R(buff, c, 'rampOut', 0.05, 4, 0.01, 'ramp out');
     R(buff, c, 'cooldown', 0, 20, 0.05, 'cooldown');
-    buff.add(c, 'playAnimation').name('throw a clip');
+    buff.add(c, 'playAnimation').name('한 클립 던지기');
     Editor.castAnimation(buff, c);
 
     // The fresnel is on the character's *own* materials, so these apply to a
     // rig that is already charged — including a paused one.
-    const rim = folder.addFolder('Fresnel on the character');
+    const rim = folder.addFolder('캐릭터의 프레넬');
     R(rim, c, 'fresnel', 0, 3, 0.01, 'rim strength');
     R(rim, c, 'fresnelPower', 0.2, 8, 0.05, 'rim tightness');
     R(rim, c, 'fresnelBias', 0, 1, 0.005, 'body glow');
@@ -1898,11 +1898,11 @@ export class Editor {
     R(rim, c, 'fresnelPulseSpeed', 0.1, 12, 0.05, 'breathing rate');
     R(rim, c, 'fresnelFlicker', 0, 1, 0.01, 'stutter');
     R(rim, c, 'fresnelFlickerSpeed', 1, 90, 1, 'stutter rate');
-    rim.addColor(c, 'colorRim').name('rim');
-    rim.addColor(c, 'colorCore').name('rim core');
-    rim.addColor(c, 'colorVein').name('veins');
+    rim.addColor(c, 'colorRim').name('림');
+    rim.addColor(c, 'colorCore').name('림 코어');
+    rim.addColor(c, 'colorVein').name('정맥');
 
-    const skin = folder.addFolder('Veins & sweep');
+    const skin = folder.addFolder('정맥과 스윕');
     R(skin, c, 'veins', 0, 3, 0.01, 'vein strength');
     R(skin, c, 'veinScale', 0.5, 30, 0.1, 'veins / metre');
     R(skin, c, 'veinSpeed', -6, 6, 0.05, 'vein crawl');
@@ -1911,7 +1911,7 @@ export class Editor {
     R(skin, c, 'scanSpeed', 0, 4, 0.01, 'sweeps / sec');
     R(skin, c, 'scanWidth', 0.02, 1, 0.005, 'sweep width');
 
-    const arcs = folder.addFolder('The arcs');
+    const arcs = folder.addFolder('아크');
     R(arcs, c, 'arcs', 1, 32, 1, 'arcs at once');
     R(arcs, c, 'arcRate', 0.2, 20, 0.1, 'strikes / sec');
     R(arcs, c, 'arcLife', 0.05, 1, 0.01, 'lit fraction');
@@ -1921,14 +1921,14 @@ export class Editor {
     R(arcs, c, 'arcReach', 0, 4, 0.01, 'reach off the body');
     R(arcs, c, 'arcBow', 0, 1, 0.005, 'bow off the skin');
 
-    const body = folder.addFolder('The body they are struck on');
+    const body = folder.addFolder('불이 박히는 몸체');
     R(body, c, 'bodyRadius', 0.05, 1.5, 0.01, 'radius');
     R(body, c, 'bodyDepth', 0.1, 2, 0.01, 'front-to-back');
     R(body, c, 'bodyLow', -0.2, 1, 0.01, 'lowest point');
     R(body, c, 'bodyHigh', 0, 1.6, 0.01, 'highest point');
     R(body, c, 'bodyProfile', 0, 1, 0.01, 'silhouette');
 
-    const shape = folder.addFolder('The shape of one arc');
+    const shape = folder.addFolder('한 아크의 모양');
     R(shape, c, 'arcJitter', 0, 1, 0.005, 'kink amplitude');
     R(shape, c, 'arcJitterScale', 0.2, 30, 0.1, 'kinks / metre');
     R(shape, c, 'arcOctaves', 1, 5, 1, 'octaves');
@@ -1936,7 +1936,7 @@ export class Editor {
     R(shape, c, 'arcCrawl', -20, 20, 0.1, 'kink crawl');
     R(shape, c, 'arcPinch', 0.01, 0.5, 0.005, 'end pinch');
 
-    const ribbon = folder.addFolder('The ribbon');
+    const ribbon = folder.addFolder('리본');
     R(ribbon, c, 'arcWidth', 0.002, 0.3, 0.001, 'width');
     R(ribbon, c, 'arcTaper', 0.05, 3, 0.01, 'end taper');
     R(ribbon, c, 'arcCoreWidth', 1, 6, 0.01, 'spine thickness');
@@ -1950,12 +1950,12 @@ export class Editor {
     R(ribbon, c, 'arcStrandFlash', 0, 1, 0.01, 'arc blink');
     R(ribbon, c, 'arcGlow', 0, 8, 0.01, 'glow');
     R(ribbon, c, 'arcOpacity', 0, 2, 0.01, 'opacity');
-    ribbon.addColor(c, 'colorArcCore').name('core');
-    ribbon.addColor(c, 'colorArcInner').name('inner');
-    ribbon.addColor(c, 'colorArcOuter').name('outer');
-    ribbon.addColor(c, 'colorArcHalo').name('halo');
+    ribbon.addColor(c, 'colorArcCore').name('코어');
+    ribbon.addColor(c, 'colorArcInner').name('안쪽');
+    ribbon.addColor(c, 'colorArcOuter').name('바깥쪽');
+    ribbon.addColor(c, 'colorArcHalo').name('후광');
 
-    const shed = folder.addFolder('Sparks & motes');
+    const shed = folder.addFolder('불꽃과 부유 입자');
     R(shed, c, 'sparkRate', 0, 800, 1, 'spark rate');
     R(shed, c, 'sparkSize', 0.005, 0.8, 0.005, 'spark size');
     R(shed, c, 'sparkSpeed', 0, 30, 0.1, 'spark speed');
@@ -1971,7 +1971,7 @@ export class Editor {
     Editor.gradient(shed, c, 'colorSpark', 'Spark colour');
     Editor.gradient(shed, c, 'colorMote', 'Mote colour');
 
-    const crater = folder.addFolder('The crater under the feet');
+    const crater = folder.addFolder('발 아래 분화구');
     R(crater, c, 'fieldRadius', 0.2, 12, 0.05, 'radius');
     R(crater, c, 'fieldHeight', 0, 0.5, 0.005, 'height off the floor');
     R(crater, c, 'fieldEdge', 0.02, 2, 0.01, 'lip width');
@@ -1995,12 +1995,12 @@ export class Editor {
     R(crater, c, 'fieldPulseSpeed', 0.05, 8, 0.05, 'breathing rate');
     R(crater, c, 'fieldOpacity', 0, 2, 0.01, 'opacity');
     R(crater, c, 'fieldGlow', 0, 8, 0.01, 'glow');
-    crater.addColor(c, 'colorFieldCrust').name('crust');
-    crater.addColor(c, 'colorFieldPlate').name('shards');
-    crater.addColor(c, 'colorFieldSeam').name('seams');
-    crater.addColor(c, 'colorFieldEmber').name('embers & lip');
+    crater.addColor(c, 'colorFieldCrust').name('지각');
+    crater.addColor(c, 'colorFieldPlate').name('파편');
+    crater.addColor(c, 'colorFieldSeam').name('이음새');
+    crater.addColor(c, 'colorFieldEmber').name('숯과 입술');
 
-    const rings = folder.addFolder('Rings around the crater');
+    const rings = folder.addFolder('분화구 둘레의 고리');
     R(rings, c, 'ringCount', 0, 16, 1, 'rings at once');
     R(rings, c, 'ringRate', 0.05, 10, 0.05, 'strikes / sec');
     R(rings, c, 'ringLife', 0.05, 1, 0.01, 'lit fraction');
@@ -2014,7 +2014,7 @@ export class Editor {
     R(rings, c, 'ringWrithe', -4, 4, 0.01, 'lobe crawl');
     R(rings, c, 'ringWidth', 0.002, 0.2, 0.001, 'width');
 
-    const spires = folder.addFolder('Uprights across the circle');
+    const spires = folder.addFolder('원을 가로지르는 수직선');
     R(spires, c, 'spireCount', 0, 32, 1, 'uprights at once');
     R(spires, c, 'spireRate', 0.05, 20, 0.05, 'strikes / sec');
     R(spires, c, 'spireLife', 0.05, 1, 0.01, 'lit fraction');
@@ -2025,7 +2025,7 @@ export class Editor {
     R(spires, c, 'spireLean', 0, 2, 0.01, 'outward lean');
     R(spires, c, 'spireWidth', 0.002, 0.2, 0.001, 'width');
 
-    const coil = folder.addFolder('The coil ribbon');
+    const coil = folder.addFolder('코일 리본');
     R(coil, c, 'coilJitter', 0, 1, 0.005, 'kink amplitude');
     R(coil, c, 'coilJitterScale', 0.2, 30, 0.1, 'kinks / metre');
     R(coil, c, 'coilOctaves', 1, 5, 1, 'octaves');
@@ -2044,30 +2044,30 @@ export class Editor {
     R(coil, c, 'coilStrandFlash', 0, 1, 0.01, 'filament blink');
     R(coil, c, 'coilGlow', 0, 8, 0.01, 'glow');
     R(coil, c, 'coilOpacity', 0, 2, 0.01, 'opacity');
-    coil.addColor(c, 'colorCoilCore').name('core');
-    coil.addColor(c, 'colorCoilInner').name('inner');
-    coil.addColor(c, 'colorCoilOuter').name('outer');
-    coil.addColor(c, 'colorCoilHalo').name('halo');
+    coil.addColor(c, 'colorCoilCore').name('코어');
+    coil.addColor(c, 'colorCoilInner').name('안쪽');
+    coil.addColor(c, 'colorCoilOuter').name('바깥쪽');
+    coil.addColor(c, 'colorCoilHalo').name('후광');
 
-    const ground = folder.addFolder('Burns under the feet');
+    const ground = folder.addFolder('발 아래 화상');
     R(ground, c, 'groundRate', 0, 30, 0.1, 'burns / sec');
     R(ground, c, 'groundRadius', 0.05, 5, 0.05, 'burn radius');
     R(ground, c, 'groundSpread', 0, 5, 0.05, 'scatter');
     R(ground, c, 'groundLife', 0.05, 5, 0.05, 'burn lifetime');
     R(ground, c, 'groundIntensity', 0, 3, 0.01, 'burn intensity');
     R(ground, c, 'groundBranches', 0, 3, 0.01, 'branch detail');
-    ground.addColor(c, 'colorGround').name('burn');
-    ground.addColor(c, 'colorGroundEmber').name('ember');
+    ground.addColor(c, 'colorGround').name('화상');
+    ground.addColor(c, 'colorGroundEmber').name('숯');
 
-    const light = folder.addFolder('Dynamic light');
+    const light = folder.addFolder('동적 광원');
     R(light, c, 'lightIntensity', 0, 60, 0.5, 'intensity');
     R(light, c, 'lightRadius', 1, 40, 0.5, 'radius');
     R(light, c, 'lightHeight', 0, 3, 0.01, 'height');
     R(light, c, 'lightFlicker', 0, 1, 0.01, 'gutter');
     R(light, c, 'lightFlickerSpeed', 1, 90, 1, 'gutter rate');
-    light.addColor(c, 'lightColor').name('colour');
+    light.addColor(c, 'lightColor').name('색상');
 
-    const beats = folder.addFolder('Charge & release');
+    const beats = folder.addFolder('충전과 해제');
     R(beats, c, 'burstSparks', 0, 600, 1, 'sparks on charge');
     R(beats, c, 'ringRadius', 0.5, 20, 0.1, 'shockwave radius');
     R(beats, c, 'activateFlash', 0, 2, 0.01, 'flash on charge');
@@ -2075,7 +2075,7 @@ export class Editor {
     R(beats, c, 'activateShake', 0, 4, 0.01, 'shake on charge');
     R(beats, c, 'shakeDuration', 0.05, 3, 0.01, 'shake duration');
     R(beats, c, 'rumble', 0, 0.4, 0.001, 'rumble while held');
-    beats.addColor(c, 'colorFlash').name('flash colour');
+    beats.addColor(c, 'colorFlash').name('섬광 색상');
   }
 
   /* ------------------------------------------------------------------ */
@@ -2087,22 +2087,22 @@ export class Editor {
    * one should not mean learning a different panel.
    */
   _buildMagic() {
-    const folder = this.gui.addFolder('✦  Magic Boost');
+    const folder = this.gui.addFolder('✦  마법 강화');
     const c = settings.magic;
     const R = Editor.range;
 
-    const buff = folder.addFolder('The buff');
+    const buff = folder.addFolder('강화');
     R(buff, c, 'duration', 1, 60, 0.1, 'duration');
     R(buff, c, 'rampIn', 0.05, 4, 0.01, 'ramp in');
     R(buff, c, 'rampOut', 0.05, 6, 0.01, 'ramp out');
     R(buff, c, 'cooldown', 0, 20, 0.05, 'cooldown');
-    buff.add(c, 'playAnimation').name('throw a clip');
+    buff.add(c, 'playAnimation').name('한 클립 던지기');
     Editor.castAnimation(buff, c);
 
     // The same patch on the character's own materials the electric buff uses,
     // shaded from this block — so these apply to a rig that is already lit,
     // including a paused one.
-    const rim = folder.addFolder('Fresnel on the character');
+    const rim = folder.addFolder('캐릭터의 프레넬');
     R(rim, c, 'fresnel', 0, 3, 0.01, 'rim strength');
     R(rim, c, 'fresnelPower', 0.2, 8, 0.05, 'rim tightness');
     R(rim, c, 'fresnelBias', 0, 1, 0.005, 'body glow');
@@ -2111,11 +2111,11 @@ export class Editor {
     R(rim, c, 'fresnelPulseSpeed', 0.1, 12, 0.05, 'breathing rate');
     R(rim, c, 'fresnelFlicker', 0, 1, 0.01, 'stutter');
     R(rim, c, 'fresnelFlickerSpeed', 1, 90, 1, 'stutter rate');
-    rim.addColor(c, 'colorRim').name('rim');
-    rim.addColor(c, 'colorCore').name('rim core');
-    rim.addColor(c, 'colorVein').name('veins');
+    rim.addColor(c, 'colorRim').name('림');
+    rim.addColor(c, 'colorCore').name('림 코어');
+    rim.addColor(c, 'colorVein').name('정맥');
 
-    const skin = folder.addFolder('Veins & sweep');
+    const skin = folder.addFolder('정맥과 스윕');
     R(skin, c, 'veins', 0, 3, 0.01, 'vein strength');
     R(skin, c, 'veinScale', 0.5, 30, 0.1, 'veins / metre');
     R(skin, c, 'veinSpeed', -6, 6, 0.05, 'vein crawl');
@@ -2124,7 +2124,7 @@ export class Editor {
     R(skin, c, 'scanSpeed', 0, 4, 0.01, 'sweeps / sec');
     R(skin, c, 'scanWidth', 0.02, 1, 0.005, 'sweep width');
 
-    const vortex = folder.addFolder('The ribbons');
+    const vortex = folder.addFolder('리본');
     R(vortex, c, 'ribbons', 1, 24, 1, 'ribbons at once');
     R(vortex, c, 'ribbonRate', 0.02, 4, 0.01, 're-rolls / sec');
     R(vortex, c, 'ribbonLife', 0.05, 1, 0.01, 'visible fraction');
@@ -2142,14 +2142,14 @@ export class Editor {
     R(vortex, c, 'ribbonCounter', 0, 1, 0.01, 'fraction reversed');
     R(vortex, c, 'ribbonClimb', -3, 3, 0.01, 'climb / sec');
 
-    const wander = folder.addFolder('How far a ribbon wanders');
+    const wander = folder.addFolder('리본이 헤매는 거리');
     R(wander, c, 'ribbonWobble', 0, 2, 0.01, 'radial wander');
     R(wander, c, 'ribbonWobbleScale', 0.1, 12, 0.05, 'lobes along it');
     R(wander, c, 'ribbonWave', 0, 2, 0.01, 'vertical wander');
     R(wander, c, 'ribbonWaveScale', 0.1, 12, 0.05, 'waves along it');
     R(wander, c, 'ribbonCrawl', -4, 4, 0.01, 'wander crawl');
 
-    const sheet = folder.addFolder('The sheet');
+    const sheet = folder.addFolder('장막');
     R(sheet, c, 'ribbonWidth', 0.01, 2, 0.005, 'width');
     R(sheet, c, 'ribbonWidthVary', 0, 0.95, 0.01, 'width variation');
     R(sheet, c, 'ribbonTaper', 0.05, 3, 0.01, 'end taper');
@@ -2173,12 +2173,12 @@ export class Editor {
     R(sheet, c, 'ribbonStrandFade', 0, 1, 0.01, 'ribbon dimming');
     R(sheet, c, 'ribbonGlow', 0, 8, 0.01, 'glow');
     R(sheet, c, 'ribbonOpacity', 0, 2, 0.01, 'opacity');
-    sheet.addColor(c, 'colorRibbonCore').name('lit lip');
-    sheet.addColor(c, 'colorRibbonInner').name('inner');
-    sheet.addColor(c, 'colorRibbonOuter').name('outer');
-    sheet.addColor(c, 'colorRibbonHalo').name('halo');
+    sheet.addColor(c, 'colorRibbonCore').name('밝은 입술');
+    sheet.addColor(c, 'colorRibbonInner').name('안쪽');
+    sheet.addColor(c, 'colorRibbonOuter').name('바깥쪽');
+    sheet.addColor(c, 'colorRibbonHalo').name('후광');
 
-    const cloud = folder.addFolder('The smoke on the floor');
+    const cloud = folder.addFolder('바닥의 연기');
     R(cloud, c, 'fieldRadius', 0.2, 12, 0.05, 'radius');
     R(cloud, c, 'fieldHeight', 0, 0.5, 0.005, 'height off the floor');
     R(cloud, c, 'fieldFeather', 0.02, 1, 0.01, 'edge fade');
@@ -2201,12 +2201,12 @@ export class Editor {
     R(cloud, c, 'fieldPulseSpeed', 0.05, 8, 0.05, 'breathing rate');
     R(cloud, c, 'fieldOpacity', 0, 2, 0.01, 'opacity');
     R(cloud, c, 'fieldGlow', 0, 8, 0.01, 'glow');
-    cloud.addColor(c, 'colorFieldSmoke').name('deep smoke');
-    cloud.addColor(c, 'colorFieldSmokeLit').name('lit smoke');
-    cloud.addColor(c, 'colorFieldPool').name('pool');
-    cloud.addColor(c, 'colorFieldGlint').name('glints');
+    cloud.addColor(c, 'colorFieldSmoke').name('짙은 연기');
+    cloud.addColor(c, 'colorFieldSmokeLit').name('밝은 연기');
+    cloud.addColor(c, 'colorFieldPool').name('웅덩이');
+    cloud.addColor(c, 'colorFieldGlint').name('반짝임');
 
-    const shed = folder.addFolder('Smoke & motes');
+    const shed = folder.addFolder('연기와 부유 입자');
     R(shed, c, 'smokeRate', 0, 300, 1, 'smoke rate');
     R(shed, c, 'smokeSize', 0.05, 3, 0.01, 'smoke size');
     R(shed, c, 'smokeSpeed', 0, 8, 0.05, 'smoke speed');
@@ -2231,24 +2231,24 @@ export class Editor {
     Editor.gradient(shed, c, 'colorSmoke', 'Smoke colour');
     Editor.gradient(shed, c, 'colorMote', 'Mote colour');
 
-    const ground = folder.addFolder('Rings under the feet');
+    const ground = folder.addFolder('발 아래 고리');
     R(ground, c, 'groundRate', 0, 20, 0.1, 'rings / sec');
     R(ground, c, 'groundRadius', 0.05, 5, 0.05, 'ring radius');
     R(ground, c, 'groundSpread', 0, 5, 0.05, 'scatter');
     R(ground, c, 'groundLife', 0.05, 6, 0.05, 'ring lifetime');
     R(ground, c, 'groundIntensity', 0, 3, 0.01, 'ring intensity');
-    ground.addColor(c, 'colorGround').name('ring');
-    ground.addColor(c, 'colorGroundEmber').name('highlight');
+    ground.addColor(c, 'colorGround').name('고리');
+    ground.addColor(c, 'colorGroundEmber').name('강조');
 
-    const light = folder.addFolder('Dynamic light');
+    const light = folder.addFolder('동적 광원');
     R(light, c, 'lightIntensity', 0, 60, 0.5, 'intensity');
     R(light, c, 'lightRadius', 1, 40, 0.5, 'radius');
     R(light, c, 'lightHeight', 0, 3, 0.01, 'height');
     R(light, c, 'lightPulse', 0, 1, 0.01, 'swell');
     R(light, c, 'lightPulseSpeed', 0.05, 6, 0.05, 'swell rate');
-    light.addColor(c, 'lightColor').name('colour');
+    light.addColor(c, 'lightColor').name('색상');
 
-    const beats = folder.addFolder('Open & close');
+    const beats = folder.addFolder('열기와 닫힘');
     R(beats, c, 'burstMotes', 0, 800, 1, 'motes on opening');
     R(beats, c, 'ringRadius', 0.5, 20, 0.1, 'shockwave radius');
     R(beats, c, 'activateFlash', 0, 2, 0.01, 'flash on opening');
@@ -2256,26 +2256,26 @@ export class Editor {
     R(beats, c, 'activateShake', 0, 4, 0.01, 'shake on opening');
     R(beats, c, 'shakeDuration', 0.05, 3, 0.01, 'shake duration');
     R(beats, c, 'rumble', 0, 0.4, 0.001, 'rumble while held');
-    beats.addColor(c, 'colorFlash').name('flash colour');
+    beats.addColor(c, 'colorFlash').name('섬광 색상');
   }
 
   _buildFire() {
-    const folder = this.gui.addFolder('♨  Fire Boost');
+    const folder = this.gui.addFolder('♨  불꽃 강화');
     const c = settings.fire;
     const R = Editor.range;
 
-    const buff = folder.addFolder('The buff');
+    const buff = folder.addFolder('강화');
     R(buff, c, 'duration', 1, 60, 0.1, 'duration');
     R(buff, c, 'rampIn', 0.05, 4, 0.01, 'ramp in');
     R(buff, c, 'rampOut', 0.05, 6, 0.01, 'burn down');
     R(buff, c, 'cooldown', 0, 20, 0.05, 'cooldown');
-    buff.add(c, 'playAnimation').name('throw a clip');
+    buff.add(c, 'playAnimation').name('한 클립 던지기');
     Editor.castAnimation(buff, c);
 
     // The same patch on the character's own materials the other two buffs use,
     // shaded as heat from this block — so these apply to a rig that is already
     // burning, including a paused one.
-    const rim = folder.addFolder('Fresnel mask on the character');
+    const rim = folder.addFolder('캐릭터의 프레넬 마스크');
     R(rim, c, 'fresnel', 0, 3, 0.01, 'rim strength');
     R(rim, c, 'fresnelPower', 0.2, 8, 0.05, 'rim tightness');
     R(rim, c, 'fresnelBias', 0, 1, 0.005, 'body heat');
@@ -2284,11 +2284,11 @@ export class Editor {
     R(rim, c, 'fresnelPulseSpeed', 0.1, 12, 0.05, 'breathing rate');
     R(rim, c, 'fresnelFlicker', 0, 1, 0.01, 'gutter');
     R(rim, c, 'fresnelFlickerSpeed', 1, 90, 1, 'gutter rate');
-    rim.addColor(c, 'colorRim').name('rim');
-    rim.addColor(c, 'colorCore').name('rim core');
-    rim.addColor(c, 'colorVein').name('veins');
+    rim.addColor(c, 'colorRim').name('림');
+    rim.addColor(c, 'colorCore').name('림 코어');
+    rim.addColor(c, 'colorVein').name('정맥');
 
-    const skin = folder.addFolder('Veins & sweep');
+    const skin = folder.addFolder('정맥과 스윕');
     R(skin, c, 'veins', 0, 3, 0.01, 'vein strength');
     R(skin, c, 'veinScale', 0.5, 30, 0.1, 'veins / metre');
     R(skin, c, 'veinSpeed', -6, 6, 0.05, 'vein crawl');
@@ -2299,10 +2299,10 @@ export class Editor {
 
     // No capsule: the tongues are rooted on the rig's own limb segments, so the
     // only thing the shape needs is how thick a limb is taken to be.
-    const skeleton = folder.addFolder('The skeleton the fire is rooted on');
+    const skeleton = folder.addFolder('불이 뿌리내린 골격');
     R(skeleton, c, 'boneThickness', 0, 4, 0.01, 'limb thickness');
 
-    const tongues = folder.addFolder('The tongues');
+    const tongues = folder.addFolder('불의 혀');
     R(tongues, c, 'flames', 1, 96, 1, 'tongues at once');
     R(tongues, c, 'flameRate', 0.05, 6, 0.01, 're-rolls / sec');
     R(tongues, c, 'flameLife', 0.05, 1, 0.01, 'burning fraction');
@@ -2322,7 +2322,7 @@ export class Editor {
     R(tongues, c, 'flameSwayScale', 0.1, 12, 0.05, 'waves along it');
     R(tongues, c, 'flameSwaySpeed', -6, 6, 0.05, 'wander travel');
 
-    const sheet = folder.addFolder('The sheet a tongue is drawn on');
+    const sheet = folder.addFolder('혀가 그려지는 장막');
     R(sheet, c, 'flameWidth', 0.005, 1, 0.005, 'width at the root');
     R(sheet, c, 'flameWidthVary', 0, 0.95, 0.01, 'width variation');
     R(sheet, c, 'flameTaper', 0.05, 4, 0.01, 'tip taper');
@@ -2346,12 +2346,12 @@ export class Editor {
     R(sheet, c, 'flameSoftFade', 0.02, 3, 0.01, 'soft intersection');
     R(sheet, c, 'flameGlow', 0, 8, 0.01, 'glow');
     R(sheet, c, 'flameOpacity', 0, 2, 0.01, 'opacity');
-    sheet.addColor(c, 'colorFlameCore').name('core');
-    sheet.addColor(c, 'colorFlameBody').name('flame');
-    sheet.addColor(c, 'colorFlameEmber').name('ember');
-    sheet.addColor(c, 'colorFlameSmoke').name('voids');
+    sheet.addColor(c, 'colorFlameCore').name('코어');
+    sheet.addColor(c, 'colorFlameBody').name('불꽃');
+    sheet.addColor(c, 'colorFlameEmber').name('숯');
+    sheet.addColor(c, 'colorFlameSmoke').name('공동');
 
-    const orbit = folder.addFolder('The orbs');
+    const orbit = folder.addFolder('오브');
     R(orbit, c, 'orbs', 0, 16, 1, 'orbs at once');
     // At 1 the six ring sliders below do nothing: the orbs are wound about the
     // bones instead. The three under it are the helix that replaces them.
@@ -2372,7 +2372,7 @@ export class Editor {
     R(orbit, c, 'orbSizeVary', 0, 1, 0.01, 'size variation');
     R(orbit, c, 'orbStretch', 0, 3, 0.01, 'stretch along travel');
 
-    const ball = folder.addFolder('How an orb burns');
+    const ball = folder.addFolder('오브가 타오르는 방식');
     R(ball, c, 'orbFalloff', 0.05, 4, 0.01, 'edge falloff');
     R(ball, c, 'orbRim', 0, 3, 0.01, 'hot rim');
     R(ball, c, 'orbRimPower', 0.2, 8, 0.05, 'rim tightness');
@@ -2391,14 +2391,14 @@ export class Editor {
     R(ball, c, 'orbOpacity', 0, 2, 0.01, 'opacity');
     R(ball, c, 'orbEmberRate', 0, 800, 1, 'embers / sec');
     R(ball, c, 'orbEmberSpeed', 0, 8, 0.05, 'ember speed');
-    ball.addColor(c, 'colorOrbCore').name('core');
-    ball.addColor(c, 'colorOrbFlame').name('flame');
-    ball.addColor(c, 'colorOrbEmber').name('ember');
-    ball.addColor(c, 'colorOrbSmoke').name('shadow');
+    ball.addColor(c, 'colorOrbCore').name('코어');
+    ball.addColor(c, 'colorOrbFlame').name('불꽃');
+    ball.addColor(c, 'colorOrbEmber').name('숯');
+    ball.addColor(c, 'colorOrbSmoke').name('그림자');
 
     // The wake is the orbit sampled backward in time, so every control in the
     // folder above re-sweeps it live — including with the clock stopped.
-    const wake = folder.addFolder('The trails');
+    const wake = folder.addFolder('궤적');
     R(wake, c, 'trailSpan', 0.05, 4, 0.01, 'seconds of wake');
     R(wake, c, 'trailRise', -2, 4, 0.01, 'lift / sec');
     R(wake, c, 'trailWander', 0, 2, 0.01, 'fray');
@@ -2424,12 +2424,12 @@ export class Editor {
     R(wake, c, 'trailSoftFade', 0.02, 3, 0.01, 'soft intersection');
     R(wake, c, 'trailGlow', 0, 8, 0.01, 'glow');
     R(wake, c, 'trailOpacity', 0, 2, 0.01, 'opacity');
-    wake.addColor(c, 'colorTrailCore').name('core');
-    wake.addColor(c, 'colorTrailFlame').name('flame');
-    wake.addColor(c, 'colorTrailEmber').name('ember');
-    wake.addColor(c, 'colorTrailSmoke').name('voids');
+    wake.addColor(c, 'colorTrailCore').name('코어');
+    wake.addColor(c, 'colorTrailFlame').name('불꽃');
+    wake.addColor(c, 'colorTrailEmber').name('숯');
+    wake.addColor(c, 'colorTrailSmoke').name('공동');
 
-    const burn = folder.addFolder('The burn on the floor');
+    const burn = folder.addFolder('바닥의 화상');
     R(burn, c, 'fieldRadius', 0.2, 12, 0.05, 'radius');
     R(burn, c, 'fieldHeight', 0, 0.5, 0.005, 'height off the floor');
     R(burn, c, 'fieldFeather', 0.02, 1.5, 0.01, 'edge fade');
@@ -2453,12 +2453,12 @@ export class Editor {
     R(burn, c, 'fieldPulseSpeed', 0.05, 8, 0.05, 'breathing rate');
     R(burn, c, 'fieldOpacity', 0, 2, 0.01, 'opacity');
     R(burn, c, 'fieldGlow', 0, 8, 0.01, 'glow');
-    burn.addColor(c, 'colorFieldChar').name('char');
-    burn.addColor(c, 'colorFieldCrack').name('splits');
-    burn.addColor(c, 'colorFieldEmber').name('embers');
-    burn.addColor(c, 'colorFieldRing').name('lip');
+    burn.addColor(c, 'colorFieldChar').name('그을음');
+    burn.addColor(c, 'colorFieldCrack').name('갈라짐');
+    burn.addColor(c, 'colorFieldEmber').name('숯');
+    burn.addColor(c, 'colorFieldRing').name('입술');
 
-    const shed = folder.addFolder('Embers & smoke');
+    const shed = folder.addFolder('숯과 연기');
     R(shed, c, 'emberRate', 0, 900, 1, 'ember rate');
     R(shed, c, 'emberSize', 0.005, 0.4, 0.005, 'ember size');
     R(shed, c, 'emberSpeed', 0, 12, 0.05, 'ember speed');
@@ -2476,24 +2476,24 @@ export class Editor {
     Editor.gradient(shed, c, 'colorEmber', 'Ember colour');
     Editor.gradient(shed, c, 'colorSmoke', 'Smoke colour');
 
-    const ground = folder.addFolder('Scorches under the feet');
+    const ground = folder.addFolder('발 아래 그을음');
     R(ground, c, 'groundRate', 0, 20, 0.1, 'scorches / sec');
     R(ground, c, 'groundRadius', 0.05, 5, 0.05, 'scorch radius');
     R(ground, c, 'groundSpread', 0, 5, 0.05, 'scatter');
     R(ground, c, 'groundLife', 0.05, 8, 0.05, 'scorch lifetime');
     R(ground, c, 'groundIntensity', 0, 3, 0.01, 'intensity');
-    ground.addColor(c, 'colorGround').name('burn');
-    ground.addColor(c, 'colorGroundEmber').name('embers');
+    ground.addColor(c, 'colorGround').name('화상');
+    ground.addColor(c, 'colorGroundEmber').name('숯');
 
-    const light = folder.addFolder('Dynamic light');
+    const light = folder.addFolder('동적 광원');
     R(light, c, 'lightIntensity', 0, 60, 0.5, 'intensity');
     R(light, c, 'lightRadius', 1, 40, 0.5, 'radius');
     R(light, c, 'lightHeight', 0, 3, 0.01, 'height');
     R(light, c, 'lightFlicker', 0, 1, 0.01, 'gutter');
     R(light, c, 'lightFlickerSpeed', 0.5, 40, 0.5, 'gutter rate');
-    light.addColor(c, 'lightColor').name('colour');
+    light.addColor(c, 'lightColor').name('색상');
 
-    const beats = folder.addFolder('Catch & burn out');
+    const beats = folder.addFolder('붙고 꺼짐');
     R(beats, c, 'burstEmbers', 0, 800, 1, 'embers on ignition');
     R(beats, c, 'burstSpread', 0.05, 3, 0.01, 'ember release radius');
     R(beats, c, 'ringRadius', 0.5, 20, 0.1, 'shockwave radius');
@@ -2503,62 +2503,62 @@ export class Editor {
     R(beats, c, 'activateShake', 0, 4, 0.01, 'shake on ignition');
     R(beats, c, 'shakeDuration', 0.05, 3, 0.01, 'shake duration');
     R(beats, c, 'rumble', 0, 0.4, 0.001, 'rumble while held');
-    beats.addColor(c, 'colorFlash').name('flash colour');
+    beats.addColor(c, 'colorFlash').name('섬광 색상');
   }
 
   _buildEnvironment() {
-    const folder = this.gui.addFolder('Environment');
+    const folder = this.gui.addFolder('환경');
     const e = settings.environment;
     const R = Editor.range;
 
     R(folder, e, 'sunIntensity', 0, 8, 0.01, 'key intensity');
-    folder.addColor(e, 'sunColor').name('key colour');
+    folder.addColor(e, 'sunColor').name('주요 색상');
     R(folder, e, 'sunAzimuth', 0, Math.PI * 2, 0.01, 'key azimuth');
     R(folder, e, 'sunElevation', 0.05, 1.5, 0.01, 'key elevation');
     R(folder, e, 'ambientIntensity', 0, 3, 0.01, 'ambient');
-    folder.addColor(e, 'ambientColor').name('ambient colour');
+    folder.addColor(e, 'ambientColor').name('환경광 색상');
     R(folder, e, 'hemiIntensity', 0, 3, 0.01, 'hemisphere');
     R(folder, e, 'envIntensity', 0, 3, 0.01, 'env (IBL)');
     R(folder, e, 'shadowRadius', 0, 8, 0.05, 'shadow softness');
     R(folder, e, 'shadowBias', -0.01, 0.001, 0.0001, 'shadow bias');
     R(folder, e, 'contactShadow', 0, 1.5, 0.01, 'contact shadow');
 
-    const rim = folder.addFolder('Rim light');
+    const rim = folder.addFolder('림 라이트');
     R(rim, e, 'rimIntensity', 0, 4, 0.01, 'rim intensity');
-    rim.addColor(e, 'rimColor').name('rim colour');
+    rim.addColor(e, 'rimColor').name('림 색상');
     R(rim, e, 'rimAzimuth', 0, Math.PI * 2, 0.01, 'rim azimuth');
     R(rim, e, 'rimElevation', 0.05, 1.5, 0.01, 'rim elevation');
-    rim.addColor(e, 'hemiSkyColor').name('hemi sky');
-    rim.addColor(e, 'hemiGroundColor').name('hemi bounce');
+    rim.addColor(e, 'hemiSkyColor').name('하늘 반구광');
+    rim.addColor(e, 'hemiGroundColor').name('반사 반구광');
 
-    const fog = folder.addFolder('Backdrop, fog & dust');
-    fog.addColor(e, 'backgroundColor').name('backdrop');
-    fog.add(e, 'fogEnabled').name('fog enabled');
-    fog.addColor(e, 'fogColor').name('fog colour');
+    const fog = folder.addFolder('배경, 안개, 먼지');
+    fog.addColor(e, 'backgroundColor').name('배경');
+    fog.add(e, 'fogEnabled').name('안개 활성화');
+    fog.addColor(e, 'fogColor').name('안개 색상');
     // near = where the fog starts, far = where it is total; widening the gap or
     // pushing both out thins the fog, closing it thickens it.
     R(fog, e, 'fogNear', 1, 200, 1, 'fog near');
     R(fog, e, 'fogFar', 10, 400, 1, 'fog far');
     R(fog, e, 'dustAmount', 0, 3, 0.01, 'floating dust');
 
-    const floor = folder.addFolder('Stage floor');
-    floor.add(e, 'floorTexture').name('stone tile');
+    const floor = folder.addFolder('무대 바닥');
+    floor.add(e, 'floorTexture').name('돌 타일');
     R(floor, e, 'floorTextureScale', 0.5, 24, 0.1, 'tile size (m)');
     R(floor, e, 'floorNormalScale', 0, 3, 0.01, 'relief strength');
     R(floor, e, 'floorTexTint', 0, 1, 0.01, 'tint toward floor');
-    floor.addColor(e, 'floorColor').name('floor colour');
-    floor.addColor(e, 'floorTint').name('floor tint');
+    floor.addColor(e, 'floorColor').name('바닥 색상');
+    floor.addColor(e, 'floorTint').name('바닥 색조');
     R(floor, e, 'floorRoughness', 0.05, 1, 0.01, 'roughness');
     R(floor, e, 'floorSheen', 0, 1, 0.01, 'sheen');
     R(floor, e, 'floorPool', 0, 1, 0.01, 'light pool');
   }
 
   _buildPost() {
-    const folder = this.gui.addFolder('Post processing');
+    const folder = this.gui.addFolder('후처리');
     const p = settings.post;
     const R = Editor.range;
 
-    folder.add(p, 'enabled').name('enabled');
+    folder.add(p, 'enabled').name('활성화');
     R(folder, p, 'exposure', 0.1, 3, 0.01, 'exposure');
     R(folder, p, 'bloomStrength', 0, 3, 0.01, 'bloom intensity');
     R(folder, p, 'bloomRadius', 0, 1.5, 0.01, 'bloom radius');
@@ -2576,7 +2576,7 @@ export class Editor {
   }
 
   _buildCamera() {
-    const folder = this.gui.addFolder('Camera');
+    const folder = this.gui.addFolder('카메라');
     const c = settings.camera;
     const R = Editor.range;
 
@@ -2592,11 +2592,11 @@ export class Editor {
     R(folder, c, 'damping', 0.001, 0.5, 0.001, 'follow damping');
     R(folder, c, 'autoFrame', 0, 1, 0.01, 'auto framing');
 
-    folder.add({ clear: () => this.hooks.onClear?.() }, 'clear').name('Clear effects (C)');
+    folder.add({ clear: () => this.hooks.onClear?.() }, 'clear').name('효과 정리 (C)');
   }
 
   _buildCharacter() {
-    const folder = this.gui.addFolder('Character');
+    const folder = this.gui.addFolder('캐릭터');
     const c = settings.character;
     const R = Editor.range;
 
@@ -2607,15 +2607,15 @@ export class Editor {
 
     // Which clip each ability throws lives in that ability's own folder, under
     // "The cast"; these are the edges of the blend that lays it over the idle.
-    const cast = folder.addFolder('Casting');
+    const cast = folder.addFolder('시전 동작');
     R(cast, c, 'castBlendIn', 0.01, 1, 0.01, 'blend into cast');
     R(cast, c, 'castBlendOut', 0.01, 1.5, 0.01, 'blend back to idle');
-    cast.add(c, 'turnToAim').name('turn to aim');
+    cast.add(c, 'turnToAim').name('조준 방향으로 회전');
     R(cast, c, 'turnRate', 0.000001, 0.02, 0.000001, 'turn follow');
 
     // The procedural accent that rides on top of the clip. Zero both leans to
     // let the animation carry the cast on its own.
-    const lunge = folder.addFolder('Lunge');
+    const lunge = folder.addFolder('돌진');
     R(lunge, c, 'castLean', 0, 1.2, 0.01, 'lunge lean');
     R(lunge, c, 'castRecoil', 0, 0.8, 0.005, 'lunge recoil');
     R(lunge, c, 'castSettle', 0.2, 8, 0.05, 'lunge settle');

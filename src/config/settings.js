@@ -2949,52 +2949,52 @@ export const ELEMENTS = [
  */
 export const ELEMENT_META = {
   pyre: {
-    label: 'Pyre Crown',
+    label: '화염 왕관',
     accent: '#ff6a1e',
     key: 'Q',
-    hint: 'Pyre Crown',
+    hint: '화염 왕관',
     cast: CastShape.ZONE
   },
   kraken: {
-    label: 'Kraken Crown',
+    label: '크라켄 왕관',
     accent: '#3fe0c8',
     key: 'E',
-    hint: 'Kraken Crown',
+    hint: '크라켄 왕관',
     cast: CastShape.ZONE
   },
   electrical: {
-    label: 'Electrical Sphere',
+    label: '전기 구체',
     accent: '#ff7a30',
     key: 'R',
-    hint: 'Electrical Sphere',
+    hint: '전기 구체',
     cast: CastShape.ZONE
   },
   earth: {
-    label: 'Earthen Spire',
+    label: '대지의 첨탑',
     accent: '#a8704a',
     key: 'F',
-    hint: 'Earthen Spire',
+    hint: '대지의 첨탑',
     cast: CastShape.LINE
   },
   portal: {
-    label: 'Verdant Gate',
+    label: '녹색 관문',
     accent: '#79ef27',
     key: 'V',
-    hint: 'Verdant Gate',
+    hint: '녹색 관문',
     cast: CastShape.GATE
   },
   aether: {
-    label: 'Tidewrought Ring',
+    label: '격류의 고리',
     accent: '#3fd8ff',
     key: 'X',
-    hint: 'Tidewrought Ring',
+    hint: '격류의 고리',
     cast: CastShape.RING
   },
   firePortal: {
-    label: 'Fire Portal',
+    label: '불꽃 차원의 문',
     accent: '#ffb02e',
     key: 'Z',
-    hint: 'Fire Portal',
+    hint: '불꽃 차원의 문',
     cast: CastShape.SCRIBE
   }
 };
@@ -3008,24 +3008,24 @@ export const ELEMENT_META = {
  * three facts the HUD asks an ability for, and its own key.
  */
 export const BOOST_META = Object.freeze({
-  label: 'Electric Boost',
+  label: '전기 강화',
   accent: '#7fc9ff',
   key: 'B',
-  hint: 'Electric Boost'
+  hint: '전기 강화'
 });
 
 export const MAGIC_META = Object.freeze({
-  label: 'Magic Boost',
+  label: '마법 강화',
   accent: '#c46bff',
   key: 'M',
-  hint: 'Magic Boost'
+  hint: '마법 강화'
 });
 
 export const FIRE_META = Object.freeze({
-  label: 'Fire Boost',
+  label: '불꽃 강화',
   accent: '#ff7a1e',
   key: 'K',
-  hint: 'Fire Boost'
+  hint: '불꽃 강화'
 });
 
 /** How the given ability is aimed. Line unless its metadata says otherwise. */
